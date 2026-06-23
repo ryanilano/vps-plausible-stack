@@ -1,7 +1,7 @@
 Page 06
 
 Purpose:
-Recap + the central irony. Dana now owns her analytics completely, privately, securely — and the dashboard reports almost nobody visits. The New Yorker punchline.
+Recap + the central irony. Dana now owns her analytics completely, privately, securely — and the dashboard reports almost nobody visits. The deadpan editorial-cartoon punchline.
 
 Audience note:
 Assumes Pages 01–05. Lands the tension: ownership and privacy are real wins; obscurity is the joke.
@@ -14,7 +14,7 @@ Image Prompt:
 Create a six-panel educational literary comic page.
 
 Style:
-Modern literary graphic-novel art in the vein of understated ligne-claire indie / alternative comics and New Yorker
+Modern literary graphic-novel art in the vein of understated ligne-claire indie / alternative comics and editorial-cartoon
 cover illustration.
 Clean ligne-claire linework, thin even ink weight, restrained and precise.
 Flat muted color palette: dusty blues, ochre, olive, warm gray; soft print-like
@@ -25,7 +25,7 @@ Dry, ironic, observational comedy. Comedy comes from composition and silence,
 not exaggeration.
 Not manga chibi. Not cute. Not shonen. Not glossy 3D. Not action lines.
 Lettering: clean typeset caption boxes and small naturalistic speech balloons,
-New-Yorker-style dry captions.
+dry, understated editorial captions.
 
 Characters in this page:
 Dana — 34, black bob with blunt bangs, round wire glasses, oversized olive cardigan,

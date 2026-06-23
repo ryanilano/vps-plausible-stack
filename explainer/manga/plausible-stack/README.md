@@ -3,7 +3,7 @@
 A 6-page literary comic that explains the **vps-plausible-stack** project: why you'd
 self-host your own privacy-friendly website analytics, and what every moving part does.
 
-**Tone:** deadpan and ironic — in the vein of understated literary indie comics and a New Yorker cartoon.
+**Tone:** deadpan and ironic — in the vein of understated literary indie comics and a wry single-panel editorial cartoon.
 Not the cute version. The comedy is in the silence and the punchline.
 
 - **Source:** this repo (`vps-plausible-stack`)

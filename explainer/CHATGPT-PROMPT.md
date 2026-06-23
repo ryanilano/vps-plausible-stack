@@ -1,7 +1,7 @@
 # 🎨 One paste-and-go ChatGPT prompt for the comic
 
 This file gives you **one master prompt** to paste into ChatGPT (image generation) to
-produce the *Self-Hosted* comic in the literary indie-comics / New-Yorker style — deadpan,
+produce the *Self-Hosted* comic in the literary indie-comics / editorial-cartoon style — deadpan,
 ironic, not cute.
 
 > **How to use it**
@@ -21,7 +21,7 @@ You are illustrating a six-page literary comic called "Self-Hosted." Keep the st
 and characters IDENTICAL across every page I ask for. Do not make it cute.
 
 STYLE (use for every image, verbatim):
-Modern literary graphic-novel art in the vein of understated ligne-claire indie / alternative comics and New Yorker cover
+Modern literary graphic-novel art in the vein of understated ligne-claire indie / alternative comics and refined editorial magazine-cover
 illustration. Clean ligne-claire linework, thin even ink weight, restrained and
 precise. Flat muted color palette: dusty blues, ochre, olive, warm gray; soft
 print-like tones, no glossy rendering, no gradients, slight risograph texture.
@@ -29,7 +29,7 @@ Naturalistic adult proportions and understated faces; quiet, deadpan, melancholi
 Urban realism — apartments, laptops, fluorescent light, late-evening windows. Dry,
 ironic, observational comedy that comes from composition and silence, not
 exaggeration. Clean typeset caption boxes and small naturalistic speech balloons with
-New-Yorker-style dry captions. NOT manga chibi, NOT cute, NOT shonen, NOT glossy 3D,
+dry, understated editorial captions. NOT manga chibi, NOT cute, NOT shonen, NOT glossy 3D,
 NOT action lines.
 
 RECURRING CAST (draw them the same every time):
@@ -54,11 +54,11 @@ Paste this on its own if you want one image instead of six:
 ```
 Create a single six-panel literary comic page titled "Self-Hosted."
 
-STYLE: Modern literary graphic-novel art in the vein of understated ligne-claire indie / alternative comics and New Yorker
+STYLE: Modern literary graphic-novel art in the vein of understated ligne-claire indie / alternative comics and editorial-cartoon
 cover illustration. Clean ligne-claire linework, thin even ink weight. Flat muted
 palette: dusty blues, ochre, olive, warm gray; soft risograph texture, no gradients,
 no gloss. Naturalistic deadpan adults, urban realism, late-evening apartment light.
-Dry, ironic, New-Yorker-cartoon humor from composition and silence. NOT cute, NOT
+Dry, ironic, wry editorial-cartoon humor from composition and silence. NOT cute, NOT
 chibi, NOT shonen, NOT 3D. Typeset caption boxes and small speech balloons.
 
 CHARACTER: DANA, 34 — black bob with blunt bangs, round wire glasses, oversized olive

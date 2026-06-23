@@ -8,11 +8,11 @@
 
 ## Style preset (LOCKED)
 
-**Custom — "Literary indie-comics / New Yorker deadpan."** Not the cute version. Restated verbatim in every page prompt.
+**Custom — "Literary indie-comics / editorial-cartoon deadpan."** Not the cute version. Restated verbatim in every page prompt.
 
 ```
 Style:
-Modern literary graphic-novel art in the vein of understated ligne-claire indie / alternative comics and New Yorker
+Modern literary graphic-novel art in the vein of understated ligne-claire indie / alternative comics and editorial-cartoon
 cover illustration.
 Clean ligne-claire linework, thin even ink weight, restrained and precise.
 Flat muted color palette: dusty blues, ochre, olive, warm gray; soft print-like
@@ -23,7 +23,7 @@ Dry, ironic, observational comedy. Comedy comes from composition and silence,
 not exaggeration.
 Not manga chibi. Not cute. Not shonen. Not glossy 3D. Not action lines.
 Lettering: clean typeset caption boxes and small naturalistic speech balloons,
-New-Yorker-style dry captions.
+dry, understated editorial captions.
 ```
 
 ## Core concepts (dependency order)
