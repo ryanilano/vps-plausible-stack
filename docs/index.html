@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Self-Hosted — a vps-plausible-stack explainer</title>
+<meta name="description" content="Self-Hosted: a short, deadpan comic explaining how to replace Google Analytics with your own private, self-hosted Plausible on a $5 server." />
+
+<!-- Open Graph / social -->
+<meta property="og:title" content="Self-Hosted — an explainer comic" />
+<meta property="og:description" content="How to replace Google Analytics with a $5 server and a stubborn refusal to ask anyone's permission." />
+<meta property="og:type" content="article" />
+<meta property="og:image" content="panels/page-1.png" />
+
+<!--
+  Art direction: Adrian Tomine / New Yorker register.
+  Clean keylines, generous white space, muted ink, a single restrained spot color,
+  deadpan caption boxes set against a literary serif. The six comic plates are the
+  real artwork; the editorial matter underneath is for the curious.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500;1,6..72,600&display=swap" rel="stylesheet" />
+
+<style>
+  :root {
+    --paper:  #e6e9e4;
+    --panel:  #f0f2ed;
+    --ink:    #1d2128;
+    --muted:  #6c7178;
+    --spot:   #3c5d72;
+    --spot-soft: #dbe5ea;
+    --clay:   #8c7333;
+    --clay-soft: #eae3cf;
+    --line:   #1d2128;
+    --hair:   #cdd1c9;
+  }
+
+  * { box-sizing: border-box; }
+  html { font-size: 21px; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+  body {
+    margin: 0;
+    background:
+      radial-gradient(circle at 1px 1px, rgba(29,33,40,0.04) 1px, transparent 0) 0 0 / 4px 4px,
+      var(--paper);
+    color: var(--ink);
+    font-family: "Newsreader", Georgia, "Times New Roman", serif;
+    font-size: 1.32rem;
+    line-height: 1.5;
+  }
+  .strip { max-width: 920px; margin: 0 auto; padding: 0 28px 120px; }
+  a { color: var(--spot); }
+
+  /* ---- Masthead ---------------------------------------------------------- */
+  .masthead { padding: 92px 0 26px; }
+  .kicker {
+    font-family: "Newsreader", Georgia, serif;
+    text-transform: uppercase; letter-spacing: 0.3em;
+    font-size: 0.8rem; font-weight: 600; color: var(--spot);
+    margin: 0 0 26px;
+  }
+  .masthead h1 {
+    font-family: "Fraunces", "Newsreader", Georgia, serif;
+    font-weight: 500; font-size: clamp(3.4rem, 9vw, 7rem);
+    line-height: 0.96; letter-spacing: -0.025em; margin: 0;
+  }
+  .masthead h1 em { font-style: italic; color: var(--spot); }
+  .masthead .standfirst {
+    font-family: "Fraunces", "Newsreader", Georgia, serif;
+    font-size: 1.85rem; color: var(--muted); font-style: italic; font-weight: 400;
+    line-height: 1.28; max-width: 22em; margin: 30px 0 0;
+  }
+  .byline {
+    font-family: "Newsreader", Georgia, serif;
+    font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--muted); margin-top: 26px; border-top: 1.5px solid var(--line);
+    padding-top: 12px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 6px;
+  }
+
+  /* ---- Action row (download / source) ------------------------------------ */
+  .actions { display: flex; flex-wrap: wrap; gap: 12px; margin: 30px 0 8px; }
+  .btn {
+    font-family: "Newsreader", Georgia, serif;
+    text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.72rem; font-weight: 600;
+    text-decoration: none; padding: 12px 20px; border: 1.5px solid var(--line);
+  }
+  .btn.solid { background: var(--ink); color: var(--paper); }
+  .btn.ghost { background: transparent; color: var(--ink); }
+  .btn:hover { background: var(--spot); color: var(--paper); border-color: var(--spot); }
+
+  /* ---- Comic plates (the real artwork) ----------------------------------- */
+  .plate { margin: 64px 0 0; }
+  .plate-no {
+    font-family: "Newsreader", Georgia, serif;
+    text-transform: uppercase; letter-spacing: 0.2em; font-size: 0.72rem; font-weight: 600;
+    color: var(--spot); margin: 0 0 4px;
+  }
+  .plate h2 {
+    font-family: "Fraunces", "Newsreader", Georgia, serif;
+    font-weight: 500; font-size: 2rem; line-height: 1.08; letter-spacing: -0.02em;
+    margin: 0 0 16px; font-style: italic;
+  }
+  .plate img {
+    display: block; width: 100%; height: auto;
+    border: 1.5px solid var(--line);
+    box-shadow: 6px 6px 0 rgba(29,33,40,0.10);
+    background: var(--panel);
+  }
+  .plate figcaption {
+    font-family: "Newsreader", Georgia, serif;
+    font-size: 0.95rem; color: var(--muted); font-style: italic;
+    margin: 14px 2px 0; line-height: 1.45;
+  }
+  .plate figcaption b { font-style: normal; font-weight: 600; color: var(--ink); }
+
+  .divider { border: none; border-top: 1.5px solid var(--line); margin: 84px 0 0; }
+
+  /* ---- Appendix: the parts ----------------------------------------------- */
+  .appendix h2.sec {
+    font-family: "Fraunces", "Newsreader", Georgia, serif;
+    font-weight: 600; font-size: 2.3rem; line-height: 1.05; letter-spacing: -0.02em;
+    margin: 64px 0 6px;
+  }
+  .lede { font-size: 1.2rem; color: var(--muted); font-style: italic; margin: 0 0 18px; max-width: 30em; }
+
+  .cast { width: 100%; border-collapse: collapse; margin-top: 4px; }
+  .cast td { padding: 13px 4px; border-bottom: 1px solid var(--hair); vertical-align: top; }
+  .cast tr:last-child td { border-bottom: none; }
+  .cast td:first-child {
+    width: 150px; font-family: "Newsreader", Georgia, serif; font-weight: 600;
+    font-size: 0.78rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--spot);
+    white-space: nowrap;
+  }
+  .cast td:last-child { font-size: 1.0rem; color: var(--ink); }
+  .cast .role { display: block; font-family: "Newsreader", Georgia, serif; font-size: 0.62rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 500; margin-top: 3px; }
+
+  .diagram {
+    background: var(--ink); color: #cfe0d8;
+    border: 1.5px solid var(--line);
+    padding: 24px 22px; margin-top: 18px; overflow-x: auto;
+  }
+  .diagram pre {
+    margin: 0; font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.82rem; line-height: 1.5; white-space: pre; letter-spacing: 0.02em;
+  }
+
+  .virtues { list-style: none; margin: 18px 0 0; padding: 0; }
+  .virtues li { padding: 12px 0; border-top: 1px solid var(--hair); }
+  .virtues li:first-child { border-top: none; }
+  .virtues b {
+    font-family: "Newsreader", Georgia, serif; font-weight: 600; font-size: 0.8rem;
+    letter-spacing: 0.05em; text-transform: uppercase; color: var(--spot);
+    display: block; margin-bottom: 2px;
+  }
+  .virtues span { font-size: 1.0rem; color: var(--ink); }
+
+  .colophon {
+    margin-top: 64px; border-top: 1.5px solid var(--line); padding-top: 22px;
+    font-family: "Newsreader", Georgia, serif; font-size: 0.74rem; letter-spacing: 0.04em;
+    color: var(--muted); text-transform: uppercase; line-height: 1.7;
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;
+  }
+</style>
+</head>
+<body>
+
+<div class="strip">
+
+  <!-- Masthead --------------------------------------------------------------->
+  <header class="masthead">
+    <p class="kicker">An Explainer, in Six Pages</p>
+    <h1>Self-Hosted<em>, or:</em> how I learned to count my own visitors</h1>
+    <p class="standfirst">A small, dry story about replacing Google Analytics with a $5 server and a stubborn refusal to ask anyone's permission.</p>
+    <div class="byline">
+      <span>vps-plausible-stack</span>
+      <span>Featuring Dana &amp; Theo</span>
+    </div>
+    <div class="actions">
+      <a class="btn solid" href="Self-Hosted.pdf" download>↓ Download the comic (PDF)</a>
+      <a class="btn ghost" href="https://github.com/romyilano/vps-plausible-stack">View the repository</a>
+    </div>
+  </header>
+
+  <!-- The six comic plates --------------------------------------------------->
+
+  <figure class="plate">
+    <p class="plate-no">Page One</p>
+    <h2>The Surveillance Default</h2>
+    <img src="panels/page-1.png" alt="Page 1: Dana alone at her laptop at night; a generic analytics dashboard shows an 'Accept all cookies?' banner drawn as an eviction notice; a second suited shadow joins hers on the wall." loading="lazy" />
+    <figcaption><b>The problem.</b> Every website wants to know who's visiting — and most pay for it with somebody else's privacy. "So Google watches my visitors," Dana notes, "so I can watch my visitors."</figcaption>
+  </figure>
+
+  <figure class="plate">
+    <p class="plate-no">Page Two</p>
+    <h2>Renting a VPS</h2>
+    <img src="panels/page-2.png" alt="Page 2: In a café, Theo tells Dana to host it herself; a napkin sketch of a small building; a bare $5-a-month rented studio; a diagram of a VPS box containing the Plausible app." loading="lazy" />
+    <figcaption><b>The escape hatch.</b> A <b>VPS</b> is a small computer you rent in a data center — yours alone, somewhere across town. Two cores, two gigabytes, the cheapest unit in the building. You move in <b>Plausible</b>, which counts visits with no cookies and nobody else in the room.</figcaption>
+  </figure>
+
+  <figure class="plate">
+    <p class="plate-no">Page Three</p>
+    <h2>Caddy &amp; the Self-Installing Lock</h2>
+    <img src="panels/page-3.png" alt="Page 3: A single street-facing door marked 'Port 80 / 443'; Caddy the doorman fits his own brass deadbolt; a diagram comparing an http postcard anyone can read to an https sealed, padlocked envelope." loading="lazy" />
+    <figcaption><b>The front door.</b> Only one door faces the street. <b>Caddy</b> answers it, and on his own requests a certificate and fits the lock — that lock is <b>HTTPS</b>: the message is sealed in transit, and the lock proves the door is really yours. "Renews itself, too."</figcaption>
+  </figure>
+
+  <figure class="plate">
+    <p class="plate-no">Page Four</p>
+    <h2>The Back Room</h2>
+    <img src="panels/page-4.png" alt="Page 4: A windowless back office where two clerks, Postgres and ClickHouse, keep the records; a diagram showing Caddy connected to an internal network with no internet access." loading="lazy" />
+    <figcaption><b>The databases.</b> Behind Caddy, two clerks do the record-keeping: <b>Postgres</b> keeps the boring, important paperwork; <b>ClickHouse</b> only counts, fast. They share a private hallway with <b>no door to the street</b> — the outside world can't even find them.</figcaption>
+  </figure>
+
+  <figure class="plate">
+    <p class="plate-no">Page Five</p>
+    <h2>Locks &amp; Keys</h2>
+    <img src="panels/page-5.png" alt="Page 5: A queue of strangers trying the door forever; Fail2Ban logging failed logins and banning them; a locksmith changing locks overnight; a wall safe labelled 1Password holding the secrets." loading="lazy" />
+    <figcaption><b>Hardening.</b> The moment a server is online, strangers try the door — forever. <b>Fail2Ban</b> bans the persistent; <b>unattended upgrades</b> change the locks the night a flaw is found; and secrets go in the <b>1Password</b> safe, never written into the shared blueprints.</figcaption>
+  </figure>
+
+  <figure class="plate">
+    <p class="plate-no">Page Six</p>
+    <h2>The Last Page</h2>
+    <img src="panels/page-6.png" alt="Page 6: A clean private Plausible dashboard reading 'Visitors today: 1 (you)'; Dana and Theo regard it deadpan; a final bookend shot of Dana alone with a single shadow." loading="lazy" />
+    <figcaption><b>The punchline.</b> Her front door, her back room, her keys — all hers. The dashboard is honest, anonymous, and addressed to no one but its owner. It reads <b>one</b>. "Private. Secure. Entirely yours." A perfect, private, well-defended record of being almost completely alone online.</figcaption>
+  </figure>
+
+  <hr class="divider" />
+
+  <!-- Appendix: for the curious --------------------------------------------->
+  <section class="appendix">
+
+    <h2 class="sec">What's actually in the box</h2>
+    <p class="lede">Unromantically, flat-pack furniture for a computer. Six parts — none charming, all yours.</p>
+    <table class="cast">
+      <tr><td>Caddy<span class="role">The doorman</span></td><td>Stands at the only entrance, fits its own deadbolt, and renews the HTTPS lock without being asked.</td></tr>
+      <tr><td>Plausible<span class="role">The dashboard</span></td><td>The room you actually log into — visitors, top pages, where they came from, nothing more.</td></tr>
+      <tr><td>PostgreSQL<span class="role">The clerk</span></td><td>Keeps the dull paperwork: your account, your site settings.</td></tr>
+      <tr><td>ClickHouse<span class="role">The faster clerk</span></td><td>Counts page views at a speed that feels slightly unfair to the other clerk.</td></tr>
+      <tr><td>The scripts<span class="role">The instructions</span></td><td>Assemble, harden, and start everything — the assembly manual that runs itself.</td></tr>
+      <tr><td>1Password<span class="role">The wall safe</span></td><td>Holds the passwords. They're fetched at the last moment and never written into the files.</td></tr>
+    </table>
+
+    <h2 class="sec">The floor plan</h2>
+    <p class="lede">One way in. Everything valuable kept deliberately out of reach.</p>
+    <div class="diagram">
+<pre>      a visitor arrives at your site
+                   │
+                   ▼
+      ┌──────────────────────────┐
+      │   CADDY · the front door  │   auto-HTTPS, no key ceremony
+      └──────────────────────────┘
+                   │
+                   ▼
+      ┌──────────────────────────┐
+      │   PLAUSIBLE · the desk    │   the dashboard you log into
+      └──────────────────────────┘
+                   │
+            ┌──────┴──────┐
+            ▼             ▼
+        POSTGRES      CLICKHOUSE
+       (the settings) (the counting)
+        — internal network, no street access —</pre>
+    </div>
+
+    <h2 class="sec">Why it's decent work</h2>
+    <p class="lede">Quietly competent, in the four ways that tend to matter at 2 a.m.</p>
+    <ul class="virtues">
+      <li><b>Cheap on purpose</b><span>Tuned for the smallest, dullest server tier — 2 CPU, 2 GB of RAM — and given a little swap memory so it never keels over mid-install.</span></li>
+      <li><b>Locked by default</b><span>Installs its own security updates, turns away brute-force logins with Fail2Ban, and keeps the databases entirely off the public internet.</span></li>
+      <li><b>Discreet about secrets</b><span>Passwords are pulled from 1Password at deploy time and never committed — the wall safe stays shut.</span></li>
+      <li><b>Nothing to be trapped by</b><span>Plain Docker config and shell scripts. You can read every line. None of it belongs to anyone but you.</span></li>
+    </ul>
+
+    <div class="actions" style="margin-top:36px">
+      <a class="btn solid" href="Self-Hosted.pdf" download>↓ Download the comic (PDF)</a>
+      <a class="btn ghost" href="https://github.com/romyilano/vps-plausible-stack">View the repository</a>
+    </div>
+  </section>
+
+  <footer class="colophon">
+    <span>vps-plausible-stack · an explainer comic</span>
+    <span>Art in the register of Adrian Tomine · set in Fraunces &amp; Newsreader</span>
+  </footer>
+
+</div>
+</body>
+</html>
