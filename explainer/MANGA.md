@@ -11,7 +11,7 @@ Cast and continuity are defined in `manga/plausible-stack/character-sheet.md` an
 `manga/plausible-stack/manifest.md`. For one paste-and-go prompt, see `CHATGPT-PROMPT.md`.
 
 **Art direction (LOCKED — paste this once at the top of any image session):**
-> Modern literary graphic-novel art in the vein of Adrian Tomine and New Yorker cover
+> Modern literary graphic-novel art in the vein of understated ligne-claire indie / alternative comics and New Yorker cover
 > illustration. Clean ligne-claire linework, thin even ink weight, restrained and precise.
 > Flat muted palette: dusty blues, ochre, olive, warm gray; soft print-like tones, no
 > gradients, slight risograph texture. Naturalistic adult proportions, understated faces;
@@ -47,7 +47,7 @@ deadpan unease — she wants honest numbers without a stranger in the room.
 - Dana (deadpan, into her mug): *"So Google watches my visitors… so I can watch my visitors."*
 - Caption (close): *There had to be a version of this that didn't involve a stranger in the room.*
 
-> 🎨 **Image Prompt:** [Tomine/New Yorker art direction above.] Six-panel page. A cramped,
+> 🎨 **Image Prompt:** [Literary indie-comics / New Yorker art direction above.] Six-panel page. A cramped,
 > tidy-but-worn apartment at night; one laptop, a window of city lights, a dead plant on the
 > sill. Dana alone, lit by the screen. A generic analytics dashboard shows a giant cheerful
 > "Accept all cookies?" banner, drawn like a small bureaucratic eviction notice taped to the

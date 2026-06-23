@@ -14,7 +14,7 @@ Image Prompt:
 Create a six-panel educational literary comic page.
 
 Style:
-Modern literary graphic-novel art in the vein of Adrian Tomine and New Yorker
+Modern literary graphic-novel art in the vein of understated ligne-claire indie / alternative comics and New Yorker
 cover illustration.
 Clean ligne-claire linework, thin even ink weight, restrained and precise.
 Flat muted color palette: dusty blues, ochre, olive, warm gray; soft print-like

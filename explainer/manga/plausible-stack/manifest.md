@@ -8,11 +8,11 @@
 
 ## Style preset (LOCKED)
 
-**Custom — "Tomine / New Yorker deadpan."** Not the cute version. Restated verbatim in every page prompt.
+**Custom — "Literary indie-comics / New Yorker deadpan."** Not the cute version. Restated verbatim in every page prompt.
 
 ```
 Style:
-Modern literary graphic-novel art in the vein of Adrian Tomine and New Yorker
+Modern literary graphic-novel art in the vein of understated ligne-claire indie / alternative comics and New Yorker
 cover illustration.
 Clean ligne-claire linework, thin even ink weight, restrained and precise.
 Flat muted color palette: dusty blues, ochre, olive, warm gray; soft print-like

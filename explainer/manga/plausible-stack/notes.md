@@ -24,7 +24,7 @@
 ## Visual metaphors considered and rejected
 - Cute mascots (a mango, anthropomorphic padlocks) — explicitly rejected per art
   direction; replaced with realistic deadpan props (doorman, clerks, locksmith, safe).
-- A heist framing — too energetic for the Tomine register; kept it domestic and quiet.
+- A heist framing — too energetic for the literary-comics register; kept it domestic and quiet.
 
 ## Continuity reminders for the artist
 - Page 06 is a deliberate **bookend** of Page 01: same apartment, window, dead plant —

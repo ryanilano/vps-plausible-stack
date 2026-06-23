@@ -1,7 +1,7 @@
 # 🎨 One paste-and-go ChatGPT prompt for the comic
 
 This file gives you **one master prompt** to paste into ChatGPT (image generation) to
-produce the *Self-Hosted* comic in the Adrian-Tomine / New-Yorker style — deadpan,
+produce the *Self-Hosted* comic in the literary indie-comics / New-Yorker style — deadpan,
 ironic, not cute.
 
 > **How to use it**
@@ -21,7 +21,7 @@ You are illustrating a six-page literary comic called "Self-Hosted." Keep the st
 and characters IDENTICAL across every page I ask for. Do not make it cute.
 
 STYLE (use for every image, verbatim):
-Modern literary graphic-novel art in the vein of Adrian Tomine and New Yorker cover
+Modern literary graphic-novel art in the vein of understated ligne-claire indie / alternative comics and New Yorker cover
 illustration. Clean ligne-claire linework, thin even ink weight, restrained and
 precise. Flat muted color palette: dusty blues, ochre, olive, warm gray; soft
 print-like tones, no glossy rendering, no gradients, slight risograph texture.
@@ -54,7 +54,7 @@ Paste this on its own if you want one image instead of six:
 ```
 Create a single six-panel literary comic page titled "Self-Hosted."
 
-STYLE: Modern literary graphic-novel art in the vein of Adrian Tomine and New Yorker
+STYLE: Modern literary graphic-novel art in the vein of understated ligne-claire indie / alternative comics and New Yorker
 cover illustration. Clean ligne-claire linework, thin even ink weight. Flat muted
 palette: dusty blues, ochre, olive, warm gray; soft risograph texture, no gradients,
 no gloss. Naturalistic deadpan adults, urban realism, late-evening apartment light.
@@ -90,7 +90,7 @@ Muted, quiet, ironic. Leave room for the lettering.
 ### Tips for great results in ChatGPT
 - Generate **one page per message** (Block A method) for the most consistent faces.
 - If a page drifts cute or glossy, reply: *"redo, flatter color, thinner lines, more
-  deadpan, Adrian Tomine, less cute."*
+  deadpan, literary indie-comics, less cute."*
 - Ask for the **same characters** by name each time ("Dana and Theo as established").
 - Want a printable booklet after? Save each image as
   `manga/plausible-stack/panels/plausible-stack_page01.png` … `page06.png` and run the
