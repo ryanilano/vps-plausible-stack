@@ -50,10 +50,15 @@ op signin
 op inject -i config/.env.1pass           # dry run: every line must print a value
 ```
 
+The seed script prompts for the 1Password vault (default `Agentic Vault`, or pass
+`VAULT=...`). The raw `op inject` dry run above assumes that default vault; if you
+seeded into another vault, dry-run with the generate script instead (next step).
+
 ## 5. [you/script] Deploy
 
 ```sh
-op inject -i config/.env.1pass -o .env   # or scripts/generate-env-from-1password.sh
+scripts/generate-env-from-1password.sh   # prompts for vault; honors an overridden VAULT
+# (raw `op inject -i config/.env.1pass -o .env` also works, but only for the default vault)
 ./scripts/deploy-services.sh             # pull + up + smoke tests
 ```
 First boot is the risky moment — watch the ClickHouse migration in a 2nd session:

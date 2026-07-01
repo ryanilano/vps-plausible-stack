@@ -79,6 +79,24 @@ identity/dashboard build is the separate **M+** variant.
 - Revisit if: a newer CE release ships (security or ClickHouse-tuning fixes) →
   bump all four spots together and re-clone the XMLs at the new tag.
 
+## 1Password vault name: interactive, one source of truth for both scripts
+- Why: the vault was overridable when *seeding* (`VAULT=...`) but hardcoded in the
+  template `config/.env.1pass`, so seeding into a non-default vault left injection
+  reading `op://Agentic Vault/...` and failing silently. Both `seed-1password.sh`
+  and `generate-env-from-1password.sh` now resolve the vault the same way — `VAULT`
+  env wins, else prompt on a TTY, default `Agentic Vault` — and the generate script
+  rewrites the template's vault segment to match.
+- Why the template keeps a literal default (not `op://${VAULT}/...`): a bare
+  `op inject -i config/.env.1pass` dry run (documented in `DEPLOY.md` and
+  `docs/checklist.md`) must resolve out of the box. A `${VAULT}` token would break
+  that, since `op inject` does not expand shell variables.
+- Trade-off: the default vault name (`Agentic Vault`) still ships in the template
+  and scripts; a raw `op inject` dry run only works for that default (an overridden
+  vault must dry-run via the generate script).
+- Revisit if: you rename the default vault (change `DEFAULT_VAULT` in both scripts
+  **and** the `op://` refs in the template together), or move secrets off 1Password.
+
 ## Open gap
+
 - **Backups** — no strategy yet for Plausible Postgres + ClickHouse (logical
   dumps, not file copies). Tracked, not solved.

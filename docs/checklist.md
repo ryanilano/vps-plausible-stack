@@ -17,7 +17,8 @@
 ## Plausible
 
 - [ ] `.env` has `BASE_URL`, `SECRET_KEY_BASE`, `TOTP_VAULT_KEY`, `POSTGRES_PASSWORD`
-- [ ] `op inject -i config/.env.1pass` dry run resolves every line
+- [ ] `.env` generated with `scripts/generate-env-from-1password.sh` (prompts for vault; same one you seeded)
+- [ ] Dry run resolves every line — `op inject -i config/.env.1pass` (default vault) or the generate script (overridden vault)
 - [ ] Deploy (`scripts/deploy-services.sh`); watch first ClickHouse migration for OOM
 - [ ] `curl -I https://stats.yourdomain.example` returns 200
 - [ ] Create Plausible user; keep `DISABLE_REGISTRATION=true`

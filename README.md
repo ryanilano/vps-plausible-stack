@@ -5,8 +5,11 @@ Serve Plausible Analytics on the least expensive IONOS VPS Tier running Debian 1
 > **Template repo — replace the placeholders before deploying.**
 >
 > - `stats.yourdomain.example` → your Plausible hostname
-> - `Agentic Vault` → your 1Password vault (in `config/.env.1pass` and
->   `scripts/seed-1password.sh`, or pass `VAULT=...`)
+> - `Agentic Vault` → your 1Password vault. Both `scripts/seed-1password.sh` and
+>   `scripts/generate-env-from-1password.sh` prompt for it (default `Agentic
+>   Vault`) or take `VAULT=...`; use the **same** value for both so seeding and
+>   injection target one vault. `config/.env.1pass` keeps `Agentic Vault` as its
+>   built-in default; the generate script rewrites it when you override.
 >
 > Real secrets never live here: `.env` is generated from 1Password and is
 > gitignored. See `DEPLOY.md` for the full walkthrough.

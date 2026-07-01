@@ -8,8 +8,17 @@ set -Eeuo pipefail
 #   ./scripts/seed-1password.sh
 #   VAULT="My Vault" CADDY_EMAIL=me@example.com ./scripts/seed-1password.sh
 
-VAULT="${VAULT:-Agentic Vault}"
+DEFAULT_VAULT="Agentic Vault"
 CATEGORY="Secure Note"
+
+# Same resolution as generate-env-from-1password.sh: VAULT env wins; else prompt on
+# a TTY (default "Agentic Vault"). Seeding and injecting MUST target the same vault.
+if [[ -z "${VAULT:-}" ]]; then
+  if [[ -t 0 ]]; then
+    read -rp "1Password vault [${DEFAULT_VAULT}]: " VAULT
+  fi
+  VAULT="${VAULT:-$DEFAULT_VAULT}"
+fi
 
 command -v op      >/dev/null 2>&1 || { echo "1Password CLI (op) is not installed or not in PATH." >&2; exit 1; }
 command -v openssl >/dev/null 2>&1 || { echo "openssl is required to generate secrets." >&2; exit 1; }
