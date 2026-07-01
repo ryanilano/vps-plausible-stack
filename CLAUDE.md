@@ -8,12 +8,12 @@ code in this repository.
 This repo's own docs define how to work in it — read them before making changes:
 
 1. `README.md` — what the stack does, components, and repo layout
-2. `AGENTS.md` (mirrors `reasoning-guardrails.md`) — agent behavior rules and
+2. `AGENTS.md` (mirrors `docs/reasoning-guardrails.md`) — agent behavior rules and
    reasoning guardrails for this repo
 3. `CHANGES.md` — past decisions, *why*, and each one's revisit trigger. Don't
    silently reverse a recorded decision without checking its revisit trigger first.
-4. `docs/` — deeper guides (overview, operational plan, checklist, 1Password
-   integration, SSH hardening) if working on those areas specifically
+4. `docs/` — deeper guides (checklist, SSH hardening, reasoning guardrails) if
+   working on those areas specifically
 
 ## What this is
 

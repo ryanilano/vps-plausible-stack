@@ -11,7 +11,7 @@ driven from your Mac over SSH. Follow the steps in order.
 - **Host:** a *fresh* IONOS VPS Linux **S** (2 vCPU / 2 GB / 80 GB), Debian 13.
 - **TLS:** stock Caddy + automatic **HTTP-01** (single public host). This means
   the A record must resolve and port 80 must be open *before* first deploy.
-- **Plausible** pinned at **v3.2.0**; ClickHouse XMLs are fetched to match.
+- **Plausible** pinned at **v3.2.1**; ClickHouse XMLs are fetched to match.
 - **Caddy certs** live in a named Docker volume (`caddy_data`).
 
 Each step is tagged **[you]** (only you can do it — needs the box, your accounts,

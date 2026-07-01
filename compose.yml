@@ -48,7 +48,7 @@ services:
     logging: *default-logging
     depends_on: [plausible]
 
-  # ---- Plausible CE v3.2.0 --------------------------------------------------
+  # ---- Plausible CE v3.2.1 --------------------------------------------------
   plausible_db:
     image: postgres:16-alpine
     container_name: plausible_db
@@ -97,7 +97,7 @@ services:
       start_period: 1m
 
   plausible:
-    image: ghcr.io/plausible/community-edition:v3.2.0
+    image: ghcr.io/plausible/community-edition:v3.2.1
     container_name: plausible
     restart: unless-stopped
     command: sh -c "/entrypoint.sh db createdb && /entrypoint.sh db migrate && /entrypoint.sh run"
