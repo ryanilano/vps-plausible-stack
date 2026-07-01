@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-# harden-host.sh — host hardening for the S-tier Plausible stack VPS (Debian 13 / IONOS).
+# harden-host.sh — host hardening for the Plausible stack VPS (Debian 13 / IONOS).
 #
 # Installs and configures:
 #   - fail2ban          (bans SSH brute-forcers at the UFW layer)
@@ -11,7 +11,7 @@ set -Eeuo pipefail
 # careful step — see docs/ssh-hardening.md — precisely so a script can never
 # lock you out of the box.
 #
-# Run AFTER scripts/bootstrap-plausible-stack.sh, as your non-root user (e.g. ryan; uses sudo).
+# Run AFTER scripts/bootstrap-plausible-stack.sh, as your non-root user (e.g. admin; uses sudo).
 #
 # Anti-lockout: set ADMIN_IP to your own home/office IP so fail2ban never bans
 # the address you administer from. Strongly recommended.

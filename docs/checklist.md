@@ -1,10 +1,10 @@
-# Launch Checklist — IONOS S-tier (Plausible only)
+# Launch Checklist — small IONOS VPS (Plausible only)
 
 ## Prerequisites
 
 - [ ] Docker and `git` installed on the VPS
-- [ ] A non-root user with `sudo` + Docker access (this guide uses `ryan` as the example)
-- [ ] Key login as that user works — `ssh ryan@<vps-ip>`
+- [ ] A non-root user with `sudo` + Docker access (this guide uses `admin` as the example)
+- [ ] Key login as that user works — `ssh admin@<vps-ip>`
 
 ## Host
 
@@ -36,7 +36,7 @@
 - [ ] Confirm `fail2ban-client status sshd` loads and your IP is in `ignoreip`
 - [ ] Confirm `unattended-upgrade --dry-run` shows Debian security origin
 - [ ] Apply SSH hardening per `docs/ssh-hardening.md` (manual; keep a session open)
-- [ ] Confirm `ssh root@<vps-ip>` is refused and `ssh ryan@<vps-ip>` works
+- [ ] Confirm `ssh root@<vps-ip>` is refused and `ssh admin@<vps-ip>` works
 
 ## Known gap
 

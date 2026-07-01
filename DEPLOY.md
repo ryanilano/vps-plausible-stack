@@ -1,6 +1,6 @@
-# DEPLOY.md — S-tier (Plausible only)
+# DEPLOY.md — small VPS (Plausible only)
 
-A one-sitting walkthrough to deploy the S-tier Plausible stack to a fresh IONOS VPS S,
+A one-sitting walkthrough to deploy the Plausible stack to a fresh IONOS VPS S,
 driven from your Mac over SSH. Follow the steps in order.
 
 ## Assumptions / decisions baked in (correct these if wrong)
@@ -11,7 +11,7 @@ driven from your Mac over SSH. Follow the steps in order.
 - **Host:** a *fresh* IONOS VPS Linux **S** (2 vCPU / 2 GB / 80 GB), Debian 13.
 - **Prerequisites (you provide these):** Docker and `git` are already installed, and
   you operate as a **non-root user with `sudo` + Docker access** whose SSH key already
-  logs in. This guide uses `ryan` as the example username — substitute your own. The
+  logs in. This guide uses `admin` as the example username — substitute your own. The
   repo does not install Docker or create the user.
 - **TLS:** stock Caddy + automatic **HTTP-01** (single public host). This means
   the A record must resolve and port 80 must be open *before* first deploy.
@@ -34,7 +34,7 @@ your origin rather than Cloudflare.
 ```sh
 git clone <repo-url> ~/vps-plausible-stack && cd ~/vps-plausible-stack
 ./scripts/bootstrap-plausible-stack.sh        # 4 GB swap, UFW 22/80/443, Docker log rotation, ClickHouse configs
-exit && ssh ryan@<vps-ip>               # re-login so the docker group applies
+exit && ssh admin@<vps-ip>               # re-login so the docker group applies
 ```
 
 ## 3. [you/script] Generate `.env` and deploy
@@ -77,7 +77,7 @@ the rest of the deploy.
 
 Open `https://stats.yourdomain.example`, create your user, keep `DISABLE_REGISTRATION=true`,
 and enable **TOTP** in account settings (the stack already provides
-`TOTP_VAULT_KEY`). That's the auth story for S-tier.
+`TOTP_VAULT_KEY`). That's the auth story for this stack.
 
 ---
 

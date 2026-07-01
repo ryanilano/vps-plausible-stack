@@ -1,6 +1,6 @@
 # vps-plausible-stack
 
-Serve Plausible Analytics on the least expensive IONOS VPS Tier running Debian 13. This should work for any Debian VPS with 2GB of RAM. Runs sensible security settings such as unattended upgrades and Fail2Ban. Enable SSH hardening by hand. Secrets are generated locally with `openssl` — no external vault.
+Serve Plausible Analytics on the least expensive IONOS VPS tier running Debian 13. This should work for any Debian VPS with 2GB of RAM. Runs sensible security settings such as unattended upgrades and Fail2Ban. Enable SSH hardening by hand. Secrets are generated locally with `openssl` — no external vault.
 
 > **Template repo — replace the placeholders before deploying.**
 >
@@ -33,7 +33,7 @@ create the login user:
 
 - **Docker** (with Compose v2) and **`git`** installed
 - A **non-root user with `sudo` + Docker access** whose SSH key logs in. Docs use
-  `ryan` as the example username — substitute your own.
+  `admin` as the example username — substitute your own.
 
 ## Quick start
 

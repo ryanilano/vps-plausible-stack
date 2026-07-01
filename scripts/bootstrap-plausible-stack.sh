@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-# Host prep for the S-tier Plausible stack on Debian 13 (IONOS VPS S).
+# Host prep for the Plausible stack on Debian 13 (IONOS VPS S).
 # Stock Caddy (HTTP-01) — no Go/xcaddy, no custom image build.
 
 if [[ "${EUID}" -eq 0 ]]; then

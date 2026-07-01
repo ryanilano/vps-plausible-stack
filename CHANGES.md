@@ -1,4 +1,4 @@
-# CHANGES — Decision log (S-tier, Plausible only)
+# CHANGES — Decision log (small VPS, Plausible only)
 
 Decisions recorded with rationale and a revisit trigger, so future sessions
 don't re-litigate or silently reverse them. Change them deliberately, not by
@@ -65,7 +65,7 @@ identity/dashboard build is the separate **M+** variant.
   failure-prone steps on real VPSes, and neither is core to this repo (Compose +
   Caddy + ClickHouse config + deploy scripts). The stack now assumes **Docker and
   `git` are installed** and you operate as a **non-root user with `sudo` + Docker
-  access** (docs use `ryan` as the example). `create-deploy-user.sh` is deleted.
+  access** (docs use `admin` as the example). `create-deploy-user.sh` is deleted.
 - What bootstrap still does: preflight-checks `docker`/`git` exist, then swap, UFW,
   Docker log rotation, `docker`-group add, and the version-pinned ClickHouse config
   fetch (still uses `git`).
