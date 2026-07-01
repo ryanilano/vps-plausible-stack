@@ -10,6 +10,11 @@ OUTPUT_FILE="${ROOT_DIR}/.env"
 # otherwise prompt on a TTY, defaulting to the template's built-in "Agentic Vault".
 DEFAULT_VAULT="Agentic Vault"
 
+# The public host (bare, no scheme). Drives both Plausible's BASE_URL (derived in
+# compose as https://$DOMAIN) and Caddy's site address. Resolved like VAULT:
+# DOMAIN env wins; else prompt on a TTY; else the template's built-in default.
+DEFAULT_DOMAIN="stats.yourdomain.example"
+
 if ! command -v op >/dev/null 2>&1; then
   echo "1Password CLI (op) is not installed or not in PATH." >&2
   exit 1
@@ -26,8 +31,17 @@ if [[ -z "${VAULT:-}" ]]; then
   VAULT="${VAULT:-$DEFAULT_VAULT}"
 fi
 
-# Rewrite the vault segment of the op:// refs to the chosen vault before injecting.
-# A no-op when VAULT is the default, so the committed template stays authoritative.
-sed "s#op://${DEFAULT_VAULT}/#op://${VAULT}/#g" "$INPUT_FILE" | op inject -o "$OUTPUT_FILE"
+if [[ -z "${DOMAIN:-}" ]]; then
+  if [[ -t 0 ]]; then
+    read -rp "Plausible host [${DEFAULT_DOMAIN}]: " DOMAIN
+  fi
+  DOMAIN="${DOMAIN:-$DEFAULT_DOMAIN}"
+fi
+
+# Rewrite the vault segment of the op:// refs and the DOMAIN value before injecting.
+# Both are no-ops at their defaults, so the committed template stays authoritative.
+sed -e "s#op://${DEFAULT_VAULT}/#op://${VAULT}/#g" \
+    -e "s#^DOMAIN=${DEFAULT_DOMAIN}\$#DOMAIN=${DOMAIN}#" \
+    "$INPUT_FILE" | op inject -o "$OUTPUT_FILE"
 chmod 600 "$OUTPUT_FILE"
-echo "Generated $OUTPUT_FILE from $INPUT_FILE (vault: ${VAULT})"
+echo "Generated $OUTPUT_FILE from $INPUT_FILE (vault: ${VAULT}, domain: ${DOMAIN})"

@@ -14,6 +14,8 @@
 }
 
 # ---- Plausible: public (Plausible has its own login + TOTP) -----------------
-stats.yourdomain.example {
+# Host comes from $DOMAIN (set in .env, loaded via env_file). Caddy expands it at
+# config-adaptation time; the :default keeps a bare `caddy` adapt from breaking.
+{$DOMAIN:stats.yourdomain.example} {
 	reverse_proxy plausible:8000
 }

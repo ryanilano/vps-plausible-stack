@@ -109,6 +109,24 @@ identity/dashboard build is the separate **M+** variant.
   password moves to a percent-encoded field or a separate `PGPASSWORD`), *or* you
   rotate an existing base64 password — see the rotation runbook in `DEPLOY.md`.
 
+## Host parameterized via `DOMAIN`, resolved like the vault name
+- Why: the host (`stats.yourdomain.example`) was hand-edited across the `Caddyfile`,
+  `config/.env.1pass` (`BASE_URL`), and docs. It now lives in one variable, `DOMAIN`
+  (bare host), carried in `.env`: compose derives `BASE_URL: https://${DOMAIN}` and
+  Caddy's site address is `{$DOMAIN:…}` (read from the container env via
+  `env_file: [.env]`). `generate-env-from-1password.sh` resolves `DOMAIN` the same
+  way it resolves the vault — env wins → TTY prompt → literal default in the
+  template — and `scripts/configure.sh` wraps host + email + vault into one wizard.
+- Why the template keeps a literal default (not `${DOMAIN}`): same contract as the
+  vault decision above — a bare `op inject -i config/.env.1pass` dry run must resolve
+  out of the box, and `op inject` does not expand shell variables.
+- Trade-off: the host now reaches Caddy through `.env` + `env_file`; a `caddy`
+  config adapt outside compose needs `DOMAIN` set (the `{$DOMAIN:default}` fallback
+  covers it).
+- Revisit if: you move the host off `.env`-driven config, add a second public host
+  (the single-address Caddy block assumes one), or drop the raw-`op inject` dry-run
+  contract.
+
 ## Open gap
 
 - **Backups** — no strategy yet for Plausible Postgres + ClickHouse (logical
