@@ -31,8 +31,9 @@ Cast and continuity are defined in `manga/plausible-stack/character-sheet.md` an
 - **The stack, drawn as mundane props — never cute mascots:** **Caddy** = a tired doorman in
   a green coat who installs his own deadbolt (HTTPS). **Postgres & ClickHouse** = two silent
   filing clerks in a windowless back office (ClickHouse works suspiciously fast).
-  **Hardening** = an unglamorous locksmith changing the locks at 2 a.m. **1Password** = a
-  small wall safe.
+  **Hardening** = an unglamorous locksmith changing the locks at 2 a.m. **Secret
+  generation** = keys cut fresh on-site and locked in a small wall safe — never in the
+  blueprints.
 
 ---
 
@@ -128,7 +129,7 @@ network — never reachable from the internet. Teach the idea of a private netwo
 ## Page 5 — Hardening & Secrets (Locks & Keys)
 
 **Beat:** A server online is probed constantly. Fail2Ban bans the persistent, unattended
-upgrades replace the locks overnight, and 1Password keeps passwords out of the code.
+upgrades replace the locks overnight, and the keys are cut on-site so passwords stay out of the code.
 
 **Text:**
 - Caption: *The moment a server is online, strangers start trying the door. Constantly. Forever.*
@@ -143,8 +144,8 @@ upgrades replace the locks overnight, and 1Password keeps passwords out of the c
 > failed login…". An unglamorous **locksmith** in coveralls (Fail2Ban + hardening) bars one
 > figure and bolts the door in their face, then swaps a worn lock for a fresh one while
 > everyone sleeps. Inside, Dana goes to slap a password on a sticky note; Theo's hand stops
-> her and points at a small wall safe labeled **1Password**. She closes the safe; the key is
-> pulled only at the moment it's needed, then gone.
+> her and points at a small key-cutting machine beside a wall safe. A fresh key is cut
+> on the spot and locked away; it never touches the blueprints.
 
 ---
 

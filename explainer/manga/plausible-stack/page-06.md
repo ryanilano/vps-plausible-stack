@@ -40,7 +40,7 @@ deliberate visual bookend.
 Panel 1:
 Recap strip — three tiny iconic vignettes in one wide panel: the green-coated
 doorman with his deadbolt (Caddy/HTTPS), the windowless back office (the databases),
-the little wall safe (1Password). Caption: "Her front door, her back room, her keys. All hers."
+the little wall safe of on-site-cut keys. Caption: "Her front door, her back room, her keys. All hers."
 
 Panel 2:
 Dana opens her own clean Plausible dashboard on the laptop. No cookie banner this

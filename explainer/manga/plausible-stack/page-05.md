@@ -1,7 +1,7 @@
 Page 05
 
 Purpose:
-Host hardening and secret management — Fail2Ban, automatic security updates, and 1Password keeping passwords out of the code.
+Host hardening and secret management — Fail2Ban, automatic security updates, and keys cut on-site to keep passwords out of the code.
 
 Audience note:
 Assumes Page 04. Teaches: a server on the internet is constantly probed; hardening + never writing secrets into files is the defense.
@@ -55,11 +55,11 @@ sleeps. Caption: "Unattended upgrades: the building quietly replaces its own loc
 
 Panel 5:
 Dana about to scribble a password on a sticky note and slap it on the laptop. Theo's
-hand stops her, pointing at a small wall safe labeled "1Password." Caption: "Secrets go in the safe. Never written into the building's blueprints." Theo, flat: "Anyone can read the blueprints. That's the whole idea of sharing them."
+hand stops her, pointing at a key-cutting machine beside a small wall safe. Caption: "Cut the keys on-site. Never write them into the building's blueprints." Theo, flat: "Anyone can read the blueprints. That's the whole idea of sharing them."
 
 Panel 6:
-Dana closes the wall safe; the password is pulled from it only at the moment it's
-needed, then gone. Caption: "Keys in the safe. Locks that change themselves. A door that bans the persistent. It was, finally, boring. Boring was the goal."
+Dana cuts a fresh key at the machine and locks it in the wall safe — it never touches
+the blueprints. Caption: "Keys cut on-site. Locks that change themselves. A door that bans the persistent. It was, finally, boring. Boring was the goal."
 
 Lettering:
 Leave room for English caption boxes and small speech balloons. Keep text areas clear.

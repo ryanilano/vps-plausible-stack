@@ -24,4 +24,4 @@ memory between generations. Keep these consistent.
 - **Caddy:** a tired doorman in a green coat who installs his own deadbolt (HTTPS padlock).
 - **Postgres & ClickHouse:** two silent filing clerks in a windowless back office; ClickHouse works suspiciously fast.
 - **Fail2Ban / hardening:** an unglamorous locksmith changing the locks at 2 a.m.
-- **1Password:** a small wall safe; keys are never left on the desk.
+- **Secret generation:** a key-cutting machine beside a small wall safe; keys are cut on-site and never left on the desk.

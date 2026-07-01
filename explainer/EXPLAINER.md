@@ -39,7 +39,7 @@ Think of it like a pre-built **flat-pack furniture kit** for a server. You bring
 | **PostgreSQL** | A filing cabinet for your account & site settings. |
 | **ClickHouse** | A super-fast filing cabinet built for counting page views. |
 | **Scripts** | The "assembly instructions" — they set up, secure, and launch everything for you. |
-| **1Password** | The locked safe where your passwords live (they never get written into the code). |
+| **Generated secrets** | Passwords are cut fresh on the server with `openssl` and locked in a file that never gets shared or committed. |
 
 Only the **front door (Caddy)** is exposed to the internet. The filing cabinets are locked in a back room nobody outside can reach.
 
@@ -72,7 +72,7 @@ Only the **front door (Caddy)** is exposed to the internet. The filing cabinets 
 
 - **Cheap by design.** Tuned to fit the *smallest, least expensive* server tier (2 CPU / 2 GB RAM). Adds extra "swap" memory so it never falls over during setup.
 - **Secure by default.** Auto-installs security updates, blocks brute-force login attempts (Fail2Ban), and keeps the databases off the public internet entirely.
-- **Secrets stay secret.** Passwords are pulled from 1Password at deploy time — they're never committed into the project files.
+- **Secrets stay secret.** Passwords are generated locally with `openssl` at setup time — they're never committed into the project files.
 - **No lock-in.** It's plain Docker config and shell scripts. You can read every line and it's all yours.
 
 ---

@@ -37,39 +37,26 @@ git clone <repo-url> ~/vps-plausible-stack && cd ~/vps-plausible-stack
 exit && ssh ryan@<vps-ip>               # re-login so the docker group applies
 ```
 
-## 3. [you] Seed 1Password (on your Mac)
-
-> **Shortcut:** `op signin && ./scripts/configure.sh` does steps 3 **and** 4 at
-> once — it prompts for host, Caddy email, and vault, seeds 1Password, and writes
-> `.env`. The steps below are the same thing done by hand.
+## 3. [you/script] Generate `.env` and deploy
 
 ```sh
-op signin
-./scripts/seed-1password.sh              # creates Plausible secrets + Caddy email; skips existing
-op inject -i config/.env.1pass           # dry run: every line must print a value
-```
-
-The seed script prompts for the 1Password vault (default `Agentic Vault`, or pass
-`VAULT=...`). The raw `op inject` dry run above assumes that default vault; if you
-seeded into another vault, dry-run with the generate script instead (next step).
-
-## 4. [you/script] Deploy
-
-```sh
-scripts/generate-env-from-1password.sh   # prompts for vault + host; honors VAULT / DOMAIN
-# (raw `op inject -i config/.env.1pass -o .env` also works, but only for the default vault + host)
+./scripts/configure.sh                   # prompts for host + Caddy email; generates secrets with openssl
 ./scripts/deploy-services.sh             # pull + up + smoke tests
 ```
 
-The generate script prompts for the **host** (default `stats.yourdomain.example`,
-or pass `DOMAIN=...`). That one value drives Plausible's `BASE_URL` and Caddy's
-site address — no file is hand-edited for the host.
+`configure.sh` prompts for the **host** (default `stats.yourdomain.example`, or
+pass `DOMAIN=...`) and the Caddy email (or pass `CADDY_EMAIL=...`), then mints the
+runtime secrets with `openssl` and writes `.env`. The host is one value: it drives
+Plausible's `BASE_URL` and Caddy's site address — no file is hand-edited for it.
+Re-running preserves existing secrets. Prefer to do it by hand? Copy `env.example`
+to `.env` and fill in the blanks (each secret's `openssl` recipe is in the file).
+
 First boot is the risky moment — watch the ClickHouse migration in a 2nd session:
 ```sh
 watch -n2 'free -h; echo; docker stats --no-stream'
 ```
 
-## 5. [you] Verify
+## 4. [you] Verify
 
 ```sh
 curl -I https://stats.yourdomain.example          # 200 once Plausible is up and the cert issued
@@ -77,7 +64,7 @@ curl -I https://stats.yourdomain.example          # 200 once Plausible is up and
 Cert not issuing? `docker compose logs -f caddy` — usually DNS not yet resolving
 or port 80 not reachable.
 
-## 6. [script + you] Harden the host
+## 5. [script + you] Harden the host
 
 ```sh
 ADMIN_IP=<your-ip> ./scripts/harden-host.sh   # fail2ban + unattended-upgrades
@@ -86,7 +73,7 @@ Then apply **SSH hardening by hand** following `docs/ssh-hardening.md` — keep
 a session open and test in a second one. Do this last so a misstep can't block
 the rest of the deploy.
 
-## 7. [you] Lock down Plausible
+## 6. [you] Lock down Plausible
 
 Open `https://stats.yourdomain.example`, create your user, keep `DISABLE_REGISTRATION=true`,
 and enable **TOTP** in account settings (the stack already provides
@@ -96,32 +83,28 @@ and enable **TOTP** in account settings (the stack already provides
 
 ## Day-2
 
-- Redeploy after changes: `git pull` on the VPS, re-inject `.env`, re-run
-  `./scripts/deploy-services.sh`.
+- Redeploy after changes: `git pull` on the VPS, regenerate/edit `.env` if needed,
+  re-run `./scripts/deploy-services.sh`.
 - Health: `docker stats --no-stream`, `free -h`, `journalctl -k | grep -i oom`.
 
 ### Rotate the Postgres password
 
 The DB password is interpolated raw into `DATABASE_URL`, so it must be URL-safe —
-`scripts/seed-1password.sh` generates it as hex for that reason. If a pre-hex
-password (base64, containing `/ + =`) is still in your vault, Plausible crashes at
-boot with *"invalid URL … path should be a database name."* Rotate it:
+`scripts/configure.sh` mints it as hex for that reason. If a pre-hex password
+(base64, containing `/ + =`) is still in your `.env`, Plausible crashes at boot
+with *"invalid URL … path should be a database name."* Rotate it:
 
 ```sh
-# 1. Replace the password in 1Password with a URL-safe (hex) one
-op item edit "Plausible" --vault "Agentic Vault" \
-  "postgres password[password]=$(openssl rand -hex 32)"
+# 1. Set a URL-safe (hex) password in .env
+sed -i "s#^POSTGRES_PASSWORD=.*#POSTGRES_PASSWORD=$(openssl rand -hex 32)#" .env
 
-# 2. Regenerate .env
-scripts/generate-env-from-1password.sh          # or scripts/configure.sh
-
-# 3. Drop the Postgres volume — it was initialized with the old password.
+# 2. Drop the Postgres volume — it was initialized with the old password.
 #    Safe ONLY if Plausible never migrated (no analytics data yet).
 docker compose down
 docker volume ls | grep plausible_db_data       # confirm the exact name first
 docker volume rm vps-plausible-stack_plausible_db_data
 
-# 4. Redeploy — Postgres re-inits with the new password; Plausible connects
+# 3. Redeploy — Postgres re-inits with the new password; Plausible connects
 scripts/deploy-services.sh
 ```
 

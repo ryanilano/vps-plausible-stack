@@ -11,7 +11,7 @@ Not the cute version. The comedy is in the silence and the punchline.
 - **Pages:** 6
 - **Cast:** Dana (tired indie dev, our POV) and Theo (deadpan self-hosting evangelist),
   plus the stack drawn as props — a doorman (Caddy/HTTPS), two filing clerks
-  (Postgres + ClickHouse), a locksmith (hardening), a wall safe (1Password).
+  (Postgres + ClickHouse), a locksmith (hardening), a wall safe (locally generated secrets).
 
 ## Pages
 

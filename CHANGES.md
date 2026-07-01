@@ -96,7 +96,32 @@ identity/dashboard build is the separate **M+** variant.
 - Revisit if: a newer CE release ships (security or ClickHouse-tuning fixes) →
   bump all four spots together and re-clone the XMLs at the new tag.
 
+## Secrets generated locally with `openssl`; 1Password removed
+- Why: every secret here — `SECRET_KEY_BASE`, `TOTP_VAULT_KEY`, `POSTGRES_PASSWORD` —
+  is a **machine-generated random** created during setup and consumed only by this
+  one box. 1Password wasn't guarding a shared credential; it generated a random
+  value, stored it, and handed it back to the same script. So `op` bought nothing
+  and cost a CLI + signin dependency, a vault-name matching footgun (see the
+  superseded decision below), and an access-blocked `op://` template. Setup now runs
+  through a single `scripts/configure.sh` that mints secrets with `openssl` and
+  writes `.env`; `env.example` documents the schema for the by-hand path.
+- What changed: `scripts/seed-1password.sh` and
+  `scripts/generate-env-from-1password.sh` are deleted (folded into `configure.sh`);
+  `config/.env.1pass` is deleted (replaced by `env.example`).
+- Idempotency: re-running `configure.sh` **preserves** existing secrets in `.env`
+  (it never rotates `POSTGRES_PASSWORD`, which is bound to the initialized DB volume).
+- Trade-off: no central vault — no cross-machine secret sharing, no rotation audit
+  trail. Secrets live only in the box's gitignored `.env`; all three are regenerable
+  **except** `POSTGRES_PASSWORD` once the DB volume exists (rotating it means the
+  volume drop in `DEPLOY.md`). Back up `.env` if you don't want to reprovision.
+- Revisit if: you go multi-host, need to share secrets across machines, or want
+  centralized rotation → reintroduce a vault (restore the deleted scripts +
+  template from git history).
+
 ## 1Password vault name: interactive, one source of truth for both scripts
+- **SUPERSEDED** by "Secrets generated locally with `openssl`" above — 1Password is
+  gone, so this footgun no longer exists. Kept for history; its revisit trigger
+  ("or move secrets off 1Password") is what fired.
 - Why: the vault was overridable when *seeding* (`VAULT=...`) but hardcoded in the
   template `config/.env.1pass`, so seeding into a non-default vault left injection
   reading `op://Agentic Vault/...` and failing silently. Both `seed-1password.sh`
@@ -117,7 +142,7 @@ identity/dashboard build is the separate **M+** variant.
 - Why: `compose.yml` interpolates `POSTGRES_PASSWORD` **unencoded** into
   `DATABASE_URL` (`postgres://postgres:<pw>@…/plausible`). base64 (`openssl rand
   -base64`) emits `/ + =`; a `/` makes Ecto's URI parser read the rest as the path
-  and crash with *"path should be a database name."* `seed-1password.sh` now mints
+  and crash with *"path should be a database name."* `scripts/configure.sh` mints
   it with `openssl rand -hex 32` (256 bits, alphabet `[0-9a-f]`, always URL-safe).
   `secret key base` / `totp vault key` stay base64 — they are plain env vars, never
   inside a URL.
@@ -131,24 +156,22 @@ identity/dashboard build is the separate **M+** variant.
   `config/.env.1pass` (`BASE_URL`), and docs. It now lives in one variable, `DOMAIN`
   (bare host), carried in `.env`: compose derives `BASE_URL: https://${DOMAIN}` and
   Caddy's site address is `{$DOMAIN:…}` (read from the container env via
-  `env_file: [.env]`). `generate-env-from-1password.sh` resolves `DOMAIN` the same
-  way it resolves the vault — env wins → TTY prompt → literal default in the
-  template — and `scripts/configure.sh` wraps host + email + vault into one wizard.
-- Why the template keeps a literal default (not `${DOMAIN}`): same contract as the
-  vault decision above — a bare `op inject -i config/.env.1pass` dry run must resolve
-  out of the box, and `op inject` does not expand shell variables.
+  `env_file: [.env]`). `scripts/configure.sh` resolves `DOMAIN` — env wins → TTY
+  prompt → literal default — and writes it to `.env` alongside host + email + secrets.
+- Note: this decision predates the 1Password removal above, which retired the
+  "literal default so a bare `op inject` dry run resolves" contract this originally
+  cited. `env.example` still ships a literal default `DOMAIN` for the by-hand path,
+  but only as documentation now — no `op inject` step depends on it.
 - Trade-off: the host now reaches Caddy through `.env` + `env_file`; a `caddy`
   config adapt outside compose needs `DOMAIN` set (the `{$DOMAIN:default}` fallback
   covers it).
-- Revisit if: you move the host off `.env`-driven config, add a second public host
-  (the single-address Caddy block assumes one), or drop the raw-`op inject` dry-run
-  contract.
+- Revisit if: you move the host off `.env`-driven config, or add a second public
+  host (the single-address Caddy block assumes one).
 
 ## Open gap
 
 - **Backups** — no strategy yet for Plausible Postgres + ClickHouse (logical
   dumps, not file copies). Tracked, not solved.
-- **1Password coupling** — the secrets workflow (`seed-1password.sh`,
-  `generate-env-from-1password.sh`, `config/.env.1pass`) is heavier than a
-  single-VPS stack likely needs. Revisit a simpler secret-provisioning path (e.g.
-  a generated `.env` from prompts, no external vault dependency). Noted, not acted on.
+- ~~**1Password coupling**~~ — **resolved**: dropped 1Password for local `openssl`
+  generation via `scripts/configure.sh`. See "Secrets generated locally with
+  `openssl`" above.

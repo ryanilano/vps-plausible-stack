@@ -1,7 +1,7 @@
 # Manifest — *Self-Hosted* (an educational comic)
 
 - **Title:** *Self-Hosted*
-- **Source:** `vps-plausible-stack` repo (this project) — self-hosting Plausible Analytics on a low-cost Debian VPS behind Caddy, with internal-only databases, host hardening, and 1Password-managed secrets.
+- **Source:** `vps-plausible-stack` repo (this project) — self-hosting Plausible Analytics on a low-cost Debian VPS behind Caddy, with internal-only databases, host hardening, and locally generated secrets.
 - **Topic slug:** `plausible-stack`
 - **Audience:** Motivated newcomer / curious adult. Assumes you've heard of "websites" and "Google Analytics" but not the infrastructure underneath.
 - **Depth:** Conceptual. Teaches what each moving part *is* and *why it exists*, not how to type the commands.
@@ -32,7 +32,7 @@ dry, understated editorial captions.
 2. The escape hatch — renting a **VPS** and self-hosting Plausible (what a VPS is).
 3. The front door — **Caddy** and automatic **HTTPS** (what HTTPS / TLS is).
 4. The back room — internal-only **Postgres + ClickHouse** databases (private network).
-5. Locks & keys — **host hardening** (Fail2Ban, auto-updates) and **1Password** secrets.
+5. Locks & keys — **host hardening** (Fail2Ban, auto-updates) and locally generated **secrets**.
 6. The punchline — she owns all her data now. Almost nobody visits. (central irony)
 
 ## Page table

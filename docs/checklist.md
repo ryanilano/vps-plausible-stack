@@ -22,9 +22,9 @@
 ## Plausible
 
 - [ ] `.env` has `DOMAIN`, `SECRET_KEY_BASE`, `TOTP_VAULT_KEY`, `POSTGRES_PASSWORD` (`BASE_URL` is derived from `DOMAIN` in compose)
-- [ ] `.env` generated with `scripts/configure.sh` (or `scripts/generate-env-from-1password.sh`); prompts for vault + host, same vault you seeded
+- [ ] `.env` generated with `scripts/configure.sh` (prompts for host + Caddy email), or copied from `env.example` and filled in by hand
 - [ ] `POSTGRES_PASSWORD` is URL-safe (hex, no `/ + =`) — it lands raw in `DATABASE_URL`
-- [ ] Dry run resolves every line — `op inject -i config/.env.1pass` (default vault) or the generate script (overridden vault)
+- [ ] Every value in `.env` is filled (no blanks)
 - [ ] Deploy (`scripts/deploy-services.sh`); watch first ClickHouse migration for OOM
 - [ ] `curl -I https://stats.yourdomain.example` returns 200
 - [ ] Create Plausible user; keep `DISABLE_REGISTRATION=true`

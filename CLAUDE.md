@@ -24,9 +24,8 @@ scripts.
 
 ## Commands
 
-- Generate runtime secrets from 1Password: `scripts/generate-env-from-1password.sh`
-  (or `op inject -i config/.env.1pass -o .env`)
-- Seed the vault (first time, on your workstation): `scripts/seed-1password.sh`
+- Generate `.env` (host + Caddy email prompts; secrets minted with `openssl`):
+  `scripts/configure.sh` (or copy `env.example` to `.env` and fill it in)
 - Host bootstrap (Debian 13 VPS only — swap, UFW, Docker log rotation, ClickHouse
   configs; assumes Docker + git already installed): `scripts/bootstrap-plausible-stack.sh`
 - Host hardening: `scripts/harden-host.sh` (fail2ban + unattended-upgrades); SSH
@@ -56,8 +55,9 @@ Caddy   → Let's Encrypt (HTTP-01)   certificate issuance
 - `Caddyfile` is the routing config — stock Caddy, automatic HTTP-01, single host.
 - `clickhouse/*.xml` are upstream low-resource configs pulled by bootstrap at the
   pinned Plausible CE tag — gitignored, not hand-edited.
-- `config/.env.1pass` is the 1Password-backed env template (`op://` refs); the
-  real `.env` is generated, gitignored, and never committed.
+- `env.example` is the reference schema for the runtime `.env`; the real `.env` is
+  generated locally by `scripts/configure.sh` (secrets via `openssl`), gitignored,
+  and never committed.
 
 ## Constraints to respect
 

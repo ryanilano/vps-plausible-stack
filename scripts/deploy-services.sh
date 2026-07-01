@@ -8,7 +8,7 @@ set -Eeuo pipefail
 STACK_DIR="${STACK_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 cd "$STACK_DIR"
 
-[[ -f .env ]]                         || { echo ".env missing — run scripts/generate-env-from-1password.sh"; exit 1; }
+[[ -f .env ]]                         || { echo ".env missing — run scripts/configure.sh"; exit 1; }
 [[ -f compose.yml ]]                  || { echo "compose.yml missing"; exit 1; }
 [[ -f Caddyfile ]]                    || { echo "Caddyfile missing"; exit 1; }
 [[ -f clickhouse/low-resources.xml ]] || { echo "clickhouse/*.xml missing — run scripts/bootstrap-plausible-stack.sh"; exit 1; }

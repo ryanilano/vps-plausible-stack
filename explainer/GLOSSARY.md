@@ -185,19 +185,20 @@ add a separate login gate in front of it.
 Any sensitive value — a password, an API key, an encryption key. The golden rule:
 secrets must **never** be written into files that get shared or committed to git.
 
-**1Password**
-The password manager this project uses as the "safe" where secrets live. At deploy
-time the real values are pulled *from* the safe — they're never typed into the repo.
+**openssl**
+The tool this project uses to mint secrets. At setup time `scripts/configure.sh`
+cuts each random secret fresh with `openssl` and writes it to `.env` — the values
+are never typed into the repo and never leave the box.
 
 **`.env` file**
 A plain file of `KEY=value` settings a program reads at startup. Here it holds the
-real secrets — so it is **generated** from 1Password and **gitignored** (never
-committed).
+real secrets — so it is **generated** locally by `configure.sh` and **gitignored**
+(never committed).
 
-**`.env.1pass` (template)**
-A *safe-to-share* version of the `.env` file. Instead of real secrets it contains
-`op://...` references — pointers that say "fetch this value from 1Password." Running
-the generate script turns this template into the real `.env`.
+**`env.example` (template)**
+A *safe-to-share* version of the `.env` file. Instead of real secrets it lists the
+required keys with blanks and the `openssl` recipe for each. Copy it to `.env` and
+fill it in by hand, or let `configure.sh` generate the real file for you.
 
 **gitignored**
 Listed in `.gitignore`, meaning git is told to **ignore** that file so it's never
