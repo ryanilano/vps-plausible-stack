@@ -101,3 +101,32 @@ and enable **TOTP** in account settings (the stack already provides
 
 **Backups** — still no strategy for Plausible Postgres + ClickHouse (logical
 dumps, not file copies). Track it in `CHANGES.md`; the stack isn't "done" without it.
+### Rotate the Postgres password
+
+The DB password is interpolated raw into `DATABASE_URL`, so it must be URL-safe —
+`scripts/seed-1password.sh` generates it as hex for that reason. If a pre-hex
+password (base64, containing `/ + =`) is still in your vault, Plausible crashes at
+boot with *"invalid URL … path should be a database name."* Rotate it:
+
+```sh
+# 1. Replace the password in 1Password with a URL-safe (hex) one
+op item edit "Plausible" --vault "Agentic Vault" \
+  "postgres password[password]=$(openssl rand -hex 32)"
+
+# 2. Regenerate .env
+scripts/generate-env-from-1password.sh          # or scripts/configure.sh
+
+# 3. Drop the Postgres volume — it was initialized with the old password.
+#    Safe ONLY if Plausible never migrated (no analytics data yet).
+docker compose down
+docker volume ls | grep plausible_db_data       # confirm the exact name first
+docker volume rm vps-plausible-stack_plausible_db_data
+
+# 4. Redeploy — Postgres re-inits with the new password; Plausible connects
+scripts/deploy-services.sh
+```
+
+> The volume is prefixed with the Compose project name (`vps-plausible-stack`, see
+> `compose.yml`), giving `vps-plausible-stack_plausible_db_data`. If you already
+> have real Plausible data, **dump it first** — dropping the volume is destructive.
+
