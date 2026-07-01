@@ -4,7 +4,7 @@
 
 - [ ] Update Debian 13
 - [ ] Create deploy user (`scripts/create-deploy-user.sh`), confirm key login
-- [ ] Run `scripts/bootstrap-edge-stack.sh` (Docker, swap, UFW, log rotation, ClickHouse configs)
+- [ ] Run `scripts/bootstrap-plausible-stack.sh` (Docker, swap, UFW, log rotation, ClickHouse configs)
 - [ ] Confirm UFW allows SSH, HTTP (80), HTTPS (443) only
 - [ ] Confirm `/swapfile` active and `vm.swappiness=10`
 
@@ -16,8 +16,9 @@
 
 ## Plausible
 
-- [ ] `.env` has `BASE_URL`, `SECRET_KEY_BASE`, `TOTP_VAULT_KEY`, `POSTGRES_PASSWORD`
-- [ ] `.env` generated with `scripts/generate-env-from-1password.sh` (prompts for vault; same one you seeded)
+- [ ] `.env` has `DOMAIN`, `SECRET_KEY_BASE`, `TOTP_VAULT_KEY`, `POSTGRES_PASSWORD` (`BASE_URL` is derived from `DOMAIN` in compose)
+- [ ] `.env` generated with `scripts/configure.sh` (or `scripts/generate-env-from-1password.sh`); prompts for vault + host, same vault you seeded
+- [ ] `POSTGRES_PASSWORD` is URL-safe (hex, no `/ + =`) — it lands raw in `DATABASE_URL`
 - [ ] Dry run resolves every line — `op inject -i config/.env.1pass` (default vault) or the generate script (overridden vault)
 - [ ] Deploy (`scripts/deploy-services.sh`); watch first ClickHouse migration for OOM
 - [ ] `curl -I https://stats.yourdomain.example` returns 200

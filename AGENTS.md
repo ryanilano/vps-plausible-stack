@@ -2,7 +2,7 @@
 
 ## Purpose
 
-A small public VPS edge that serves Plausible Analytics, documented and automated
+A small public VPS that serves Plausible Analytics, documented and automated
 for direct operator execution on a Debian 13 VPS.
 
 ## System goals

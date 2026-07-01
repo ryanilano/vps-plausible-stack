@@ -28,7 +28,7 @@ scripts.
   (or `op inject -i config/.env.1pass -o .env`)
 - Seed the vault (first time, on your workstation): `scripts/seed-1password.sh`
 - Host bootstrap (Debian 13 VPS only — Docker, swap, UFW, ClickHouse configs):
-  `scripts/bootstrap-edge-stack.sh`
+  `scripts/bootstrap-plausible-stack.sh`
 - Host hardening: `scripts/harden-host.sh` (fail2ban + unattended-upgrades); SSH
   by hand per `docs/ssh-hardening.md`
 - Deploy: `scripts/deploy-services.sh` (`docker compose pull && up -d`, then smoke test)

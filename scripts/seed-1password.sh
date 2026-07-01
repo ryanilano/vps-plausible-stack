@@ -40,10 +40,12 @@ create_item() {
 echo "Seeding vault '$VAULT'…"
 
 # Generated secrets. totp vault key MUST be 32 bytes; the others are 48 for headroom.
+# postgres password is hex (URL-safe): it is interpolated raw into DATABASE_URL in
+# compose.yml, and base64's '/','+','=' break Ecto's URL parser. hex 32 = 256 bits.
 create_item "Plausible" \
   "secret key base[password]=$(openssl rand -base64 48)" \
   "totp vault key[password]=$(openssl rand -base64 32)" \
-  "postgres password[password]=$(openssl rand -base64 32)"
+  "postgres password[password]=$(openssl rand -hex 32)"
 
 # External value: Caddy / Let's Encrypt email (prompted, or from CADDY_EMAIL).
 if item_exists "Caddy"; then

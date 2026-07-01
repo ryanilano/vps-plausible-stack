@@ -1,6 +1,6 @@
 # DEPLOY.md — S-tier (Plausible only)
 
-A one-sitting walkthrough to deploy the S-tier edge to a fresh IONOS VPS S,
+A one-sitting walkthrough to deploy the S-tier Plausible stack to a fresh IONOS VPS S,
 driven from your Mac over SSH. Follow the steps in order.
 
 ## Assumptions / decisions baked in (correct these if wrong)
@@ -37,12 +37,16 @@ Confirm key login works before moving on: `ssh deploy@<vps-ip>`.
 ## 3. [script] Bootstrap the host (as deploy)
 
 ```sh
-git clone <repo-url> ~/vps-edge-stack && cd ~/vps-edge-stack
-./scripts/bootstrap-edge-stack.sh        # Docker, 4 GB swap, UFW 22/80/443, log rotation, ClickHouse configs
+git clone <repo-url> ~/vps-plausible-stack && cd ~/vps-plausible-stack
+./scripts/bootstrap-plausible-stack.sh        # Docker, 4 GB swap, UFW 22/80/443, log rotation, ClickHouse configs
 exit && ssh deploy@<vps-ip>              # re-login so the docker group applies
 ```
 
 ## 4. [you] Seed 1Password (on your Mac)
+
+> **Shortcut:** `op signin && ./scripts/configure.sh` does steps 4 **and** 5 at
+> once — it prompts for host, Caddy email, and vault, seeds 1Password, and writes
+> `.env`. The steps below are the same thing done by hand.
 
 ```sh
 op signin
@@ -57,10 +61,14 @@ seeded into another vault, dry-run with the generate script instead (next step).
 ## 5. [you/script] Deploy
 
 ```sh
-scripts/generate-env-from-1password.sh   # prompts for vault; honors an overridden VAULT
-# (raw `op inject -i config/.env.1pass -o .env` also works, but only for the default vault)
+scripts/generate-env-from-1password.sh   # prompts for vault + host; honors VAULT / DOMAIN
+# (raw `op inject -i config/.env.1pass -o .env` also works, but only for the default vault + host)
 ./scripts/deploy-services.sh             # pull + up + smoke tests
 ```
+
+The generate script prompts for the **host** (default `stats.yourdomain.example`,
+or pass `DOMAIN=...`). That one value drives Plausible's `BASE_URL` and Caddy's
+site address — no file is hand-edited for the host.
 First boot is the risky moment — watch the ClickHouse migration in a 2nd session:
 ```sh
 watch -n2 'free -h; echo; docker stats --no-stream'
@@ -96,6 +104,35 @@ and enable **TOTP** in account settings (the stack already provides
 - Redeploy after changes: `git pull` on the VPS, re-inject `.env`, re-run
   `./scripts/deploy-services.sh`.
 - Health: `docker stats --no-stream`, `free -h`, `journalctl -k | grep -i oom`.
+
+### Rotate the Postgres password
+
+The DB password is interpolated raw into `DATABASE_URL`, so it must be URL-safe —
+`scripts/seed-1password.sh` generates it as hex for that reason. If a pre-hex
+password (base64, containing `/ + =`) is still in your vault, Plausible crashes at
+boot with *"invalid URL … path should be a database name."* Rotate it:
+
+```sh
+# 1. Replace the password in 1Password with a URL-safe (hex) one
+op item edit "Plausible" --vault "Agentic Vault" \
+  "postgres password[password]=$(openssl rand -hex 32)"
+
+# 2. Regenerate .env
+scripts/generate-env-from-1password.sh          # or scripts/configure.sh
+
+# 3. Drop the Postgres volume — it was initialized with the old password.
+#    Safe ONLY if Plausible never migrated (no analytics data yet).
+docker compose down
+docker volume ls | grep plausible_db_data       # confirm the exact name first
+docker volume rm vps-plausible-stack_plausible_db_data
+
+# 4. Redeploy — Postgres re-inits with the new password; Plausible connects
+scripts/deploy-services.sh
+```
+
+> The volume is prefixed with the Compose project name (`vps-plausible-stack`, see
+> `compose.yml`), giving `vps-plausible-stack_plausible_db_data`. If you already
+> have real Plausible data, **dump it first** — dropping the volume is destructive.
 
 ## Open gap
 

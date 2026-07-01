@@ -1,7 +1,7 @@
-name: vps-edge-stack-s
+name: vps-plausible-stack
 
 # ---------------------------------------------------------------------------
-# S-tier edge stack for IONOS VPS S (2 vCPU / 2 GB / 80 GB).
+# S-tier Plausible stack for IONOS VPS S (2 vCPU / 2 GB / 80 GB).
 #   - Caddy (STOCK image) terminates TLS on 80/443 via automatic HTTP-01.
 #   - Plausible at stats.yourdomain.example (public; Plausible has its own login + TOTP).
 #   - No Authentik, no dashboard, no homelab.example, no DNS-01/custom Caddy build.
@@ -103,7 +103,7 @@ services:
     command: sh -c "/entrypoint.sh db createdb && /entrypoint.sh db migrate && /entrypoint.sh run"
     environment:
       TMPDIR: /var/lib/plausible/tmp
-      BASE_URL: ${BASE_URL}
+      BASE_URL: https://${DOMAIN}
       SECRET_KEY_BASE: ${SECRET_KEY_BASE}
       TOTP_VAULT_KEY: ${TOTP_VAULT_KEY}
       DISABLE_REGISTRATION: ${DISABLE_REGISTRATION:-true}

@@ -204,7 +204,7 @@ Listed in `.gitignore`, meaning git is told to **ignore** that file so it's neve
 accidentally committed/shared. Real secrets are always gitignored.
 
 **Bootstrap / deploy / smoke test**
-- **Bootstrap** (`bootstrap-edge-stack.sh`): one-time setup of the fresh server
+- **Bootstrap** (`bootstrap-plausible-stack.sh`): one-time setup of the fresh server
   (installs Docker, makes the swapfile, fetches configs).
 - **Deploy** (`deploy-services.sh`): pull the latest container images and start
   everything (`docker compose pull && up -d`).

@@ -73,7 +73,7 @@ identity/dashboard build is the separate **M+** variant.
   GHSA-55hg-8qxv-qj4p, RCE as the app user) and makes the ClickHouse low-memory
   settings actually apply — the latter matters on this 2 GB box.
 - Trade-off: patch pinning means no automatic security uptake. Each upgrade is a
-  manual bump in **four files** (`compose.yml`, `scripts/bootstrap-edge-stack.sh`,
+  manual bump in **four files** (`compose.yml`, `scripts/bootstrap-plausible-stack.sh`,
   `DEPLOY.md`, `clickhouse/README.md`) plus a re-fetch of the ClickHouse XMLs,
   which are version-locked to the tag.
 - Revisit if: a newer CE release ships (security or ClickHouse-tuning fixes) →
@@ -95,6 +95,37 @@ identity/dashboard build is the separate **M+** variant.
   vault must dry-run via the generate script).
 - Revisit if: you rename the default vault (change `DEFAULT_VAULT` in both scripts
   **and** the `op://` refs in the template together), or move secrets off 1Password.
+
+## Postgres password is hex, not base64 — it lands raw in a URL
+- Why: `compose.yml` interpolates `POSTGRES_PASSWORD` **unencoded** into
+  `DATABASE_URL` (`postgres://postgres:<pw>@…/plausible`). base64 (`openssl rand
+  -base64`) emits `/ + =`; a `/` makes Ecto's URI parser read the rest as the path
+  and crash with *"path should be a database name."* `seed-1password.sh` now mints
+  it with `openssl rand -hex 32` (256 bits, alphabet `[0-9a-f]`, always URL-safe).
+  `secret key base` / `totp vault key` stay base64 — they are plain env vars, never
+  inside a URL.
+- Trade-off: hex is longer per bit than base64 (cosmetic here).
+- Revisit if: `DATABASE_URL` stops being built by raw interpolation (e.g. the
+  password moves to a percent-encoded field or a separate `PGPASSWORD`), *or* you
+  rotate an existing base64 password — see the rotation runbook in `DEPLOY.md`.
+
+## Host parameterized via `DOMAIN`, resolved like the vault name
+- Why: the host (`stats.yourdomain.example`) was hand-edited across the `Caddyfile`,
+  `config/.env.1pass` (`BASE_URL`), and docs. It now lives in one variable, `DOMAIN`
+  (bare host), carried in `.env`: compose derives `BASE_URL: https://${DOMAIN}` and
+  Caddy's site address is `{$DOMAIN:…}` (read from the container env via
+  `env_file: [.env]`). `generate-env-from-1password.sh` resolves `DOMAIN` the same
+  way it resolves the vault — env wins → TTY prompt → literal default in the
+  template — and `scripts/configure.sh` wraps host + email + vault into one wizard.
+- Why the template keeps a literal default (not `${DOMAIN}`): same contract as the
+  vault decision above — a bare `op inject -i config/.env.1pass` dry run must resolve
+  out of the box, and `op inject` does not expand shell variables.
+- Trade-off: the host now reaches Caddy through `.env` + `env_file`; a `caddy`
+  config adapt outside compose needs `DOMAIN` set (the `{$DOMAIN:default}` fallback
+  covers it).
+- Revisit if: you move the host off `.env`-driven config, add a second public host
+  (the single-address Caddy block assumes one), or drop the raw-`op inject` dry-run
+  contract.
 
 ## Open gap
 

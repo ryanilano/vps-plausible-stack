@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-# Host prep for the S-tier edge stack on Debian 13 (IONOS VPS S).
+# Host prep for the S-tier Plausible stack on Debian 13 (IONOS VPS S).
 # Stock Caddy (HTTP-01) — no Go/xcaddy, no custom image build.
 
 if [[ "${EUID}" -eq 0 ]]; then
@@ -62,18 +62,18 @@ sudo ufw allow 443/tcp
 sudo ufw --force enable
 
 # ---- Working tree -----------------------------------------------------------
-mkdir -p ~/vps-edge-stack/clickhouse
+mkdir -p ~/vps-plausible-stack/clickhouse
 
 # ---- ClickHouse low-resource configs (required) ----------------------------
-if [[ ! -f ~/vps-edge-stack/clickhouse/low-resources.xml ]]; then
+if [[ ! -f ~/vps-plausible-stack/clickhouse/low-resources.xml ]]; then
   git clone -b v3.2.1 --depth 1 https://github.com/plausible/community-edition /tmp/plausible-ce
-  cp /tmp/plausible-ce/clickhouse/*.xml ~/vps-edge-stack/clickhouse/
+  cp /tmp/plausible-ce/clickhouse/*.xml ~/vps-plausible-stack/clickhouse/
   rm -rf /tmp/plausible-ce
 fi
 
 echo
 echo "Bootstrap done. Log out and back in so the docker group applies, then:"
-echo "  - place compose.yml, Caddyfile, and .env in ~/vps-edge-stack/"
+echo "  - place compose.yml, Caddyfile, and .env in ~/vps-plausible-stack/"
 echo "  - create the grey-cloud A record: stats.yourdomain.example -> VPS IP (before deploy)"
 echo "  - ./scripts/deploy-services.sh"
 echo "  - then run ./scripts/harden-host.sh and apply docs/ssh-hardening.md"

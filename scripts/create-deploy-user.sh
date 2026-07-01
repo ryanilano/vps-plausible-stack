@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-# Create a non-root user to own and run the edge stack, instead of using root.
+# Create a non-root user to own and run the Plausible stack, instead of using root.
 # Run this ONCE on the VPS, AS ROOT (IONOS gives you root to start with):
 #
 #   ssh root@<vps-ip>
@@ -70,7 +70,7 @@ cat <<EOF
 
 Done. Next steps:
   1. From your Mac, confirm key login:   ssh $DEPLOY_USER@<vps-ip>
-  2. As $DEPLOY_USER, clone the repo and run scripts/bootstrap-edge-stack.sh
+  2. As $DEPLOY_USER, clone the repo and run scripts/bootstrap-plausible-stack.sh
   3. Once that works, harden SSH (recommended) in /etc/ssh/sshd_config:
        PermitRootLogin no
        PasswordAuthentication no
