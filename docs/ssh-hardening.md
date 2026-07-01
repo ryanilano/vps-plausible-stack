@@ -5,9 +5,9 @@ locks you out of the box. Apply them by hand, in order, with a session open the
 whole time. `scripts/harden-host.sh` (fail2ban + unattended-upgrades)
 deliberately leaves `sshd_config` alone for the same reason.
 
-> Environment assumed: Debian 13 (trixie), IONOS VPS, a non-root `deploy` user
-> created by `scripts/create-deploy-user.sh`. If yours differs, adjust the
-> username and confirm the service name before reloading.
+> Environment assumed: Debian 13 (trixie), IONOS VPS, and a non-root user with
+> `sudo` + Docker access that you created beforehand. This guide uses `ryan` as the
+> example username — substitute your own, and confirm the service name before reloading.
 
 ## The golden rule
 
@@ -18,7 +18,7 @@ open — no lockout.
 
 ## Pre-flight (all must be true before you touch anything)
 
-- [ ] Key login as `deploy` works: from your Mac, `ssh deploy@<vps-ip>` logs in
+- [ ] Key login as `ryan` works: from your Mac, `ssh ryan@<vps-ip>` logs in
       with your key, no password. If this isn't already true, **stop** —
       disabling password auth now would lock you out.
 - [ ] fail2ban won't ban you: your admin IP is on the `ignoreip` line in
@@ -45,7 +45,7 @@ KbdInteractiveAuthentication no
 PubkeyAuthentication yes
 
 # Optional but recommended: only this user may log in over SSH.
-AllowUsers deploy
+AllowUsers ryan
 
 # Optional: tighten the brute-force window (fail2ban does the heavy lifting).
 MaxAuthTries 3
@@ -71,11 +71,11 @@ sudo systemctl reload ssh
 
 ```sh
 # New terminal on your Mac:
-ssh deploy@<vps-ip>        # should log in with your key
+ssh ryan@<vps-ip>          # should log in with your key
 ssh root@<vps-ip>          # should be REFUSED (PermitRootLogin no)
 ```
 
-If `deploy` logs in cleanly, you're done — close the old session. If it fails,
+If `ryan` logs in cleanly, you're done — close the old session. If it fails,
 go back to the session you kept open and either fix `99-hardening.conf` or remove
 it (`sudo rm /etc/ssh/sshd_config.d/99-hardening.conf && sudo systemctl reload ssh`)
 to revert instantly.

@@ -9,6 +9,10 @@ driven from your Mac over SSH. Follow the steps in order.
   a protected dashboard (Heimdall + Tinyauth) is the documented *growth* path,
   not part of this deploy.
 - **Host:** a *fresh* IONOS VPS Linux **S** (2 vCPU / 2 GB / 80 GB), Debian 13.
+- **Prerequisites (you provide these):** Docker and `git` are already installed, and
+  you operate as a **non-root user with `sudo` + Docker access** whose SSH key already
+  logs in. This guide uses `ryan` as the example username — substitute your own. The
+  repo does not install Docker or create the user.
 - **TLS:** stock Caddy + automatic **HTTP-01** (single public host). This means
   the A record must resolve and port 80 must be open *before* first deploy.
 - **Plausible** pinned at **v3.2.1**; ClickHouse XMLs are fetched to match.
@@ -25,26 +29,17 @@ Create a **grey-cloud (DNS-only)** A record: `stats.yourdomain.example` → VPS 
 needs this resolving at issuance time, and grey-cloud so the challenge reaches
 your origin rather than Cloudflare.
 
-## 2. [you] Create the deploy user (as root)
-
-```sh
-ssh root@<vps-ip>
-# copy scripts/create-deploy-user.sh up, then:
-./create-deploy-user.sh
-```
-Confirm key login works before moving on: `ssh deploy@<vps-ip>`.
-
-## 3. [script] Bootstrap the host (as deploy)
+## 2. [script] Bootstrap the host (as your non-root user)
 
 ```sh
 git clone <repo-url> ~/vps-plausible-stack && cd ~/vps-plausible-stack
-./scripts/bootstrap-plausible-stack.sh        # Docker, 4 GB swap, UFW 22/80/443, log rotation, ClickHouse configs
-exit && ssh deploy@<vps-ip>              # re-login so the docker group applies
+./scripts/bootstrap-plausible-stack.sh        # 4 GB swap, UFW 22/80/443, Docker log rotation, ClickHouse configs
+exit && ssh ryan@<vps-ip>               # re-login so the docker group applies
 ```
 
-## 4. [you] Seed 1Password (on your Mac)
+## 3. [you] Seed 1Password (on your Mac)
 
-> **Shortcut:** `op signin && ./scripts/configure.sh` does steps 4 **and** 5 at
+> **Shortcut:** `op signin && ./scripts/configure.sh` does steps 3 **and** 4 at
 > once — it prompts for host, Caddy email, and vault, seeds 1Password, and writes
 > `.env`. The steps below are the same thing done by hand.
 
@@ -58,7 +53,7 @@ The seed script prompts for the 1Password vault (default `Agentic Vault`, or pas
 `VAULT=...`). The raw `op inject` dry run above assumes that default vault; if you
 seeded into another vault, dry-run with the generate script instead (next step).
 
-## 5. [you/script] Deploy
+## 4. [you/script] Deploy
 
 ```sh
 scripts/generate-env-from-1password.sh   # prompts for vault + host; honors VAULT / DOMAIN
@@ -74,7 +69,7 @@ First boot is the risky moment — watch the ClickHouse migration in a 2nd sessi
 watch -n2 'free -h; echo; docker stats --no-stream'
 ```
 
-## 6. [you] Verify
+## 5. [you] Verify
 
 ```sh
 curl -I https://stats.yourdomain.example          # 200 once Plausible is up and the cert issued
@@ -82,7 +77,7 @@ curl -I https://stats.yourdomain.example          # 200 once Plausible is up and
 Cert not issuing? `docker compose logs -f caddy` — usually DNS not yet resolving
 or port 80 not reachable.
 
-## 7. [script + you] Harden the host
+## 6. [script + you] Harden the host
 
 ```sh
 ADMIN_IP=<your-ip> ./scripts/harden-host.sh   # fail2ban + unattended-upgrades
@@ -91,7 +86,7 @@ Then apply **SSH hardening by hand** following `docs/ssh-hardening.md` — keep
 a session open and test in a second one. Do this last so a misstep can't block
 the rest of the deploy.
 
-## 8. [you] Lock down Plausible
+## 7. [you] Lock down Plausible
 
 Open `https://stats.yourdomain.example`, create your user, keep `DISABLE_REGISTRATION=true`,
 and enable **TOTP** in account settings (the stack already provides

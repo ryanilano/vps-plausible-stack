@@ -27,8 +27,8 @@ scripts.
 - Generate runtime secrets from 1Password: `scripts/generate-env-from-1password.sh`
   (or `op inject -i config/.env.1pass -o .env`)
 - Seed the vault (first time, on your workstation): `scripts/seed-1password.sh`
-- Host bootstrap (Debian 13 VPS only — Docker, swap, UFW, ClickHouse configs):
-  `scripts/bootstrap-plausible-stack.sh`
+- Host bootstrap (Debian 13 VPS only — swap, UFW, Docker log rotation, ClickHouse
+  configs; assumes Docker + git already installed): `scripts/bootstrap-plausible-stack.sh`
 - Host hardening: `scripts/harden-host.sh` (fail2ban + unattended-upgrades); SSH
   by hand per `docs/ssh-hardening.md`
 - Deploy: `scripts/deploy-services.sh` (`docker compose pull && up -d`, then smoke test)

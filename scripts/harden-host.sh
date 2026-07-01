@@ -11,7 +11,7 @@ set -Eeuo pipefail
 # careful step — see docs/ssh-hardening.md — precisely so a script can never
 # lock you out of the box.
 #
-# Run AFTER scripts/bootstrap-plausible-stack.sh, as the deploy user (uses sudo).
+# Run AFTER scripts/bootstrap-plausible-stack.sh, as your non-root user (e.g. ryan; uses sudo).
 #
 # Anti-lockout: set ADMIN_IP to your own home/office IP so fail2ban never bans
 # the address you administer from. Strongly recommended.

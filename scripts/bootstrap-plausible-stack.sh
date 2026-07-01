@@ -9,28 +9,22 @@ if [[ "${EUID}" -eq 0 ]]; then
   exit 1
 fi
 
-# ---- Base packages + Docker CE ---------------------------------------------
-sudo apt update
-sudo apt install -y ca-certificates curl gnupg ufw git
-
-for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do
-  sudo apt remove -y "$pkg" 2>/dev/null || true
+# ---- Prerequisites ----------------------------------------------------------
+# Docker and git are expected to be installed already (see README "Requirements").
+# This script prepares the host for the stack; it does not provision Docker itself.
+for cmd in docker git; do
+  command -v "$cmd" >/dev/null 2>&1 || {
+    echo "ERROR: '$cmd' not found. Install Docker and git first (see README Requirements)." >&2
+    exit 1
+  }
 done
+echo "✓ Prerequisites present: $(docker --version), $(git --version)"
 
-sudo install -m 0755 -d /etc/apt/keyrings
-sudo curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc
-sudo chmod a+r /etc/apt/keyrings/docker.asc
-echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian $(. /etc/os-release && echo "$VERSION_CODENAME") stable" \
-  | sudo tee /etc/apt/sources.list.d/docker.list >/dev/null
+# ---- Base packages ----------------------------------------------------------
+# Only what this script itself needs: ufw (firewall, configured below) and
+# ca-certificates (TLS for the ClickHouse config clone).
 sudo apt update
-sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-sudo systemctl enable --now docker
-
-if ! apt-cache policy docker-ce | grep -q 'download.docker.com'; then
-  echo "ERROR: docker-ce is not being served from download.docker.com." >&2
-  exit 1
-fi
-echo "✓ Docker installed from download.docker.com: $(docker --version)"
+sudo apt install -y ufw ca-certificates
 
 # docker group is root-equivalent by design (rootful Docker). Accepted here.
 sudo usermod -aG docker "$USER"
@@ -72,7 +66,7 @@ if [[ ! -f ~/vps-plausible-stack/clickhouse/low-resources.xml ]]; then
 fi
 
 echo
-echo "Bootstrap done. Log out and back in so the docker group applies, then:"
+echo "Bootstrap done. Log out and back in so the docker group membership applies, then:"
 echo "  - place compose.yml, Caddyfile, and .env in ~/vps-plausible-stack/"
 echo "  - create the grey-cloud A record: stats.yourdomain.example -> VPS IP (before deploy)"
 echo "  - ./scripts/deploy-services.sh"

@@ -28,6 +28,15 @@ Browser → Caddy → Plausible        (stats.yourdomain.example)
 Caddy   → Let's Encrypt (HTTP-01)   certificate issuance
 ```
 
+## Requirements
+
+Provision these on the VPS before you start — the repo does not install Docker or
+create the login user:
+
+- **Docker** (with Compose v2) and **`git`** installed
+- A **non-root user with `sudo` + Docker access** whose SSH key logs in. Docs use
+  `ryan` as the example username — substitute your own.
+
 ## Quick start
 
 See **`DEPLOY.md`** for the full walkthrough. In brief:

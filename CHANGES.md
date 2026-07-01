@@ -55,7 +55,24 @@ identity/dashboard build is the separate **M+** variant.
 
 ## Rootful Docker (operator in the docker group)
 - Caveat: docker-group membership is root-equivalent.
+- The repo no longer *installs* Docker (see the prerequisites decision below); it
+  only adds the operator to the `docker` group in bootstrap.
 - Revisit if: privilege separation matters → rootless Docker.
+
+## Docker + a non-root user are prerequisites, not provisioned here
+- Why: bootstrap's Docker-CE apt install (keyring, repo line, `download.docker.com`
+  policy check) and the separate `create-deploy-user.sh` were the two most
+  failure-prone steps on real VPSes, and neither is core to this repo (Compose +
+  Caddy + ClickHouse config + deploy scripts). The stack now assumes **Docker and
+  `git` are installed** and you operate as a **non-root user with `sudo` + Docker
+  access** (docs use `ryan` as the example). `create-deploy-user.sh` is deleted.
+- What bootstrap still does: preflight-checks `docker`/`git` exist, then swap, UFW,
+  Docker log rotation, `docker`-group add, and the version-pinned ClickHouse config
+  fetch (still uses `git`).
+- Trade-off: the operator must install Docker/git and create their user beforehand;
+  the repo is no longer turnkey from a bare root shell.
+- Revisit if: you want turnkey provisioning again → restore the Docker-CE install
+  block and `create-deploy-user.sh` from git history (removed in this change).
 
 ## Host hardening
 - `fail2ban` bans SSH brute-forcers via the **UFW** action (coexists with the
@@ -131,3 +148,7 @@ identity/dashboard build is the separate **M+** variant.
 
 - **Backups** — no strategy yet for Plausible Postgres + ClickHouse (logical
   dumps, not file copies). Tracked, not solved.
+- **1Password coupling** — the secrets workflow (`seed-1password.sh`,
+  `generate-env-from-1password.sh`, `config/.env.1pass`) is heavier than a
+  single-VPS stack likely needs. Revisit a simpler secret-provisioning path (e.g.
+  a generated `.env` from prompts, no external vault dependency). Noted, not acted on.
