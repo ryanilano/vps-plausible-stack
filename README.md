@@ -39,7 +39,7 @@ See **`DEPLOY.md`** for the full walkthrough. In brief:
 - `config/.env.1pass` — 1Password-backed env template (`op://` refs)
 - `scripts/` — bootstrap, deploy, hardening, and 1Password helpers
 - `clickhouse/` — upstream low-resource configs (fetched by bootstrap; gitignored)
-- `docs/` — checklist and SSH-hardening guide
+- `docs/` — checklist, SSH-hardening guide, and reasoning guardrails
 - `CHANGES.md` — recorded decisions and their revisit triggers
 - `AGENTS.md` / `CLAUDE.md` — agent behavior rules for this repo
 

@@ -66,6 +66,19 @@ identity/dashboard build is the separate **M+** variant.
 - SSH hardening is **manual** (`docs/ssh-hardening.md`) so a script can't lock
   you out — note the Debian 13 socket-activation caveat there.
 
+## Plausible pinned to an exact patch (v3.2.1)
+- Why: reproducible deploys need an exact tag, and upstream does not backport
+  fixes — so the pin must be moved deliberately, not left to drift. v3.2.1 is the
+  current patch: it removes the `/storybook` endpoint (CVE-2026-8467 /
+  GHSA-55hg-8qxv-qj4p, RCE as the app user) and makes the ClickHouse low-memory
+  settings actually apply — the latter matters on this 2 GB box.
+- Trade-off: patch pinning means no automatic security uptake. Each upgrade is a
+  manual bump in **four files** (`compose.yml`, `scripts/bootstrap-edge-stack.sh`,
+  `DEPLOY.md`, `clickhouse/README.md`) plus a re-fetch of the ClickHouse XMLs,
+  which are version-locked to the tag.
+- Revisit if: a newer CE release ships (security or ClickHouse-tuning fixes) →
+  bump all four spots together and re-clone the XMLs at the new tag.
+
 ## Open gap
 - **Backups** — no strategy yet for Plausible Postgres + ClickHouse (logical
   dumps, not file copies). Tracked, not solved.

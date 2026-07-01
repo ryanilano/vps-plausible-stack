@@ -66,7 +66,7 @@ mkdir -p ~/vps-edge-stack/clickhouse
 
 # ---- ClickHouse low-resource configs (required) ----------------------------
 if [[ ! -f ~/vps-edge-stack/clickhouse/low-resources.xml ]]; then
-  git clone -b v3.2.0 --depth 1 https://github.com/plausible/community-edition /tmp/plausible-ce
+  git clone -b v3.2.1 --depth 1 https://github.com/plausible/community-edition /tmp/plausible-ce
   cp /tmp/plausible-ce/clickhouse/*.xml ~/vps-edge-stack/clickhouse/
   rm -rf /tmp/plausible-ce
 fi
