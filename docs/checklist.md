@@ -4,7 +4,7 @@
 
 - [ ] Update Debian 13
 - [ ] Create deploy user (`scripts/create-deploy-user.sh`), confirm key login
-- [ ] Run `scripts/bootstrap-edge-stack.sh` (Docker, swap, UFW, log rotation, ClickHouse configs)
+- [ ] Run `scripts/bootstrap-plausible-stack.sh` (Docker, swap, UFW, log rotation, ClickHouse configs)
 - [ ] Confirm UFW allows SSH, HTTP (80), HTTPS (443) only
 - [ ] Confirm `/swapfile` active and `vm.swappiness=10`
 

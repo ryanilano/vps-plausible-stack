@@ -73,7 +73,7 @@ identity/dashboard build is the separate **M+** variant.
   GHSA-55hg-8qxv-qj4p, RCE as the app user) and makes the ClickHouse low-memory
   settings actually apply — the latter matters on this 2 GB box.
 - Trade-off: patch pinning means no automatic security uptake. Each upgrade is a
-  manual bump in **four files** (`compose.yml`, `scripts/bootstrap-edge-stack.sh`,
+  manual bump in **four files** (`compose.yml`, `scripts/bootstrap-plausible-stack.sh`,
   `DEPLOY.md`, `clickhouse/README.md`) plus a re-fetch of the ClickHouse XMLs,
   which are version-locked to the tag.
 - Revisit if: a newer CE release ships (security or ClickHouse-tuning fixes) →

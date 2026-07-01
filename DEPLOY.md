@@ -1,6 +1,6 @@
 # DEPLOY.md — S-tier (Plausible only)
 
-A one-sitting walkthrough to deploy the S-tier edge to a fresh IONOS VPS S,
+A one-sitting walkthrough to deploy the S-tier Plausible stack to a fresh IONOS VPS S,
 driven from your Mac over SSH. Follow the steps in order.
 
 ## Assumptions / decisions baked in (correct these if wrong)
@@ -37,8 +37,8 @@ Confirm key login works before moving on: `ssh deploy@<vps-ip>`.
 ## 3. [script] Bootstrap the host (as deploy)
 
 ```sh
-git clone <repo-url> ~/vps-edge-stack && cd ~/vps-edge-stack
-./scripts/bootstrap-edge-stack.sh        # Docker, 4 GB swap, UFW 22/80/443, log rotation, ClickHouse configs
+git clone <repo-url> ~/vps-plausible-stack && cd ~/vps-plausible-stack
+./scripts/bootstrap-plausible-stack.sh        # Docker, 4 GB swap, UFW 22/80/443, log rotation, ClickHouse configs
 exit && ssh deploy@<vps-ip>              # re-login so the docker group applies
 ```
 

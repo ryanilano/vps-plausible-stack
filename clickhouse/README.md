@@ -1,7 +1,7 @@
 # ClickHouse configs
 
 These four files are copied verbatim from the Plausible CE **v3.2.1** tag by
-`scripts/bootstrap-edge-stack.sh` and are mounted by `compose.yml`:
+`scripts/bootstrap-plausible-stack.sh` and are mounted by `compose.yml`:
 
 - `logs.xml`
 - `ipv4-only.xml`

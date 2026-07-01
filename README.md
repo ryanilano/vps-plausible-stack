@@ -14,7 +14,7 @@ Serve Plausible Analytics on the least expensive IONOS VPS Tier running Debian 1
 > Real secrets never live here: `.env` is generated from 1Password and is
 > gitignored. See `DEPLOY.md` for the full walkthrough.
 
-A direct-exposure, single-VPS edge stack for self-hosting [Plausible
+A direct-exposure, single-VPS Plausible stack for self-hosting [Plausible
 Analytics](https://plausible.io/) behind [Caddy](https://caddyserver.com/) with
 automatic HTTPS. Caddy is the only service with published ports (80/443); the
 databases sit on an internal-only Docker network.
