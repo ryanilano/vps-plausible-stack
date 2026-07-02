@@ -78,7 +78,7 @@ Add `main` + an assets binding to `wrangler.jsonc`:
 
 ```jsonc
 {
-  "name": "yoursite",
+  "name": "example-site",
   "main": "worker/index.ts",
   "assets": { "directory": "./dist", "binding": "ASSETS" }
 }
@@ -120,7 +120,7 @@ Snippet (same-origin, no `data-domain` — the `pa-*.js` script carries the site
 
 If `/js/p.js` returns a static-asset 404 after deploy, the assets layer is winning
 over the Worker — add `"run_worker_first": ["/js/p.js", "/api/event"]` to the
-`assets` block. (Reference implementation: the `ilano.fyi` site's `worker/index.ts`.)
+`assets` block.
 
 ## 3. Verify
 
