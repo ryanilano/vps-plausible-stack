@@ -1,0 +1,21 @@
+# =============================================================================
+# Caddyfile — S-tier (Plausible only).
+#
+# Stock Caddy terminates TLS on :443 with automatic HTTP-01 certificates. That
+# needs port 80 reachable from the internet AND stats.yourdomain.example resolving to
+# this VPS at issuance time (unlike DNS-01, which doesn't). Create the grey-cloud
+# A record BEFORE the first deploy.
+#
+# Single public host, so no Cloudflare token, no wildcard, no custom build.
+# =============================================================================
+
+{
+	email {env.CADDY_EMAIL}
+}
+
+# ---- Plausible: public (Plausible has its own login + TOTP) -----------------
+# Host comes from $DOMAIN (set in .env, loaded via env_file). Caddy expands it at
+# config-adaptation time; the :default keeps a bare `caddy` adapt from breaking.
+{$DOMAIN:stats.yourdomain.example} {
+	reverse_proxy plausible:8000
+}

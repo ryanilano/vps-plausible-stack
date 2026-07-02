@@ -1,0 +1,13 @@
+# Generated runtime secrets — never commit
+.env
+
+# Machine-local editor/agent cruft
+.DS_Store
+.claude/settings.json
+.claude/settings.local.json
+
+# Upstream ClickHouse configs (fetched by bootstrap, version-locked to Plausible CE)
+clickhouse/*.xml
+
+# Local setup notes — not part of the published repo
+instructions.md
