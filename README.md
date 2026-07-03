@@ -42,7 +42,7 @@ create the login user:
 
 ## Quick start
 
-See **`DEPLOY.md`** for the full walkthrough. In brief:
+See **[DEPLOY.md](DEPLOY.md)** for the full walkthrough. In brief:
 
 1. Configure host + secrets: `scripts/configure.sh` (prompts for host and Caddy
    email, generates secrets with `openssl`, and writes `.env`). Or copy `env.example`
@@ -51,6 +51,12 @@ See **`DEPLOY.md`** for the full walkthrough. In brief:
 3. Harden the host: `scripts/harden-host.sh` (plus SSH per `docs/ssh-hardening.md`)
 4. Deploy: `scripts/deploy-services.sh`
 5. Smoke test: `curl -I https://<your-host>`
+
+## Guides
+
+- **[DEPLOY.md](DEPLOY.md)** — full deploy walkthrough for a fresh VPS
+- **[docs/add-a-site.md](docs/add-a-site.md)** — add another site to an existing
+  instance (including the first-party proxy variants)
 
 ## Repo layout
 
