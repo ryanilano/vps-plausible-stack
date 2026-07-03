@@ -187,8 +187,10 @@ identity/dashboard build is the separate **M+** variant.
 
 ## Open gap
 
-- **Backups** — no strategy yet for Plausible Postgres + ClickHouse (logical
-  dumps, not file copies). Tracked, not solved.
+- **Backups** — a manual **logical-dump floor** is now documented in `DEPLOY.md`
+  (`pg_dump` for Postgres; a table-discovering `clickhouse-client` dump for
+  ClickHouse). Still open: automated, scheduled, offsite rotation — the recipe is
+  a floor, not a policy.
 - ~~**1Password coupling**~~ — **resolved**: dropped 1Password for local `openssl`
   generation via `scripts/configure.sh`. See "Secrets generated locally with
   `openssl`" above.

@@ -1,14 +1,16 @@
 # DEPLOY.md — small VPS (Plausible only)
 
-A one-sitting walkthrough to deploy the Plausible stack to a fresh IONOS VPS S,
-driven from your Mac over SSH. Follow the steps in order.
+A one-sitting walkthrough to deploy the Plausible stack to a fresh small Debian 13
+VPS (tested on an IONOS VPS Linux S), driven from your workstation over SSH.
+Follow the steps in order.
 
 ## Assumptions / decisions baked in (correct these if wrong)
 
 - **Scope:** Plausible only. No Authentik, no dashboard, no `homelab.example`. Adding
   a protected dashboard (Heimdall + Tinyauth) is the documented *growth* path,
   not part of this deploy.
-- **Host:** a *fresh* IONOS VPS Linux **S** (2 vCPU / 2 GB / 80 GB), Debian 13.
+- **Host:** a *fresh* Debian 13 VPS with roughly **2 vCPU / 2 GB RAM** (tested on
+  an IONOS VPS Linux S — 2 vCPU / 2 GB / 80 GB — but any comparable Debian VPS works).
 - **Prerequisites (you provide these):** Docker and `git` are already installed, and
   you operate as a **non-root user with `sudo` + Docker access** whose SSH key already
   logs in. This guide uses `admin` as the example username — substitute your own. The
@@ -23,11 +25,12 @@ or a decision) or **[script]** (an artifact does it).
 
 ---
 
-## 1. [you] Cloudflare DNS record
+## 1. [you] DNS record
 
-Create a **grey-cloud (DNS-only)** A record: `stats.yourdomain.example` → VPS IP. HTTP-01
-needs this resolving at issuance time, and grey-cloud so the challenge reaches
-your origin rather than Cloudflare.
+Create an **A record** at your DNS provider: `stats.yourdomain.example` → VPS IP.
+HTTP-01 needs this resolving at issuance time, and it must point straight at your
+origin. If you use Cloudflare, set the record to **grey-cloud (DNS-only)** so the
+challenge reaches the box rather than Cloudflare's proxy.
 
 ## 2. [script] Bootstrap the host (as your non-root user)
 
@@ -112,7 +115,38 @@ scripts/deploy-services.sh
 > `compose.yml`), giving `vps-plausible-stack_plausible_db_data`. If you already
 > have real Plausible data, **dump it first** — dropping the volume is destructive.
 
-## Open gap
+### Backups (manual logical dumps)
 
-**Backups** — still no strategy for Plausible Postgres + ClickHouse (logical
-dumps, not file copies). Track it in `CHANGES.md`; the stack isn't "done" without it.
+Take **logical dumps**, not file copies of the volumes — the databases must be
+running and consistent. Two stores to cover.
+
+**Postgres** (Plausible's app data — users, sites, settings):
+
+```sh
+docker compose exec -T plausible_db \
+  pg_dump -U postgres plausible | gzip > plausible-pg-$(date +%F).sql.gz
+# restore: gunzip -c plausible-pg-DATE.sql.gz | docker compose exec -T plausible_db psql -U postgres plausible
+```
+
+**ClickHouse** (the analytics events — the bulk of your data). This discovers the
+tables at runtime so it doesn't hard-code version-specific names:
+
+```sh
+DB=plausible_events_db
+docker compose exec -T plausible_events_db clickhouse-client --query \
+  "SELECT name FROM system.tables WHERE database='$DB' AND engine NOT LIKE '%View%'" |
+while read t; do
+  docker compose exec -T plausible_events_db clickhouse-client --query \
+    "SELECT * FROM $DB.\`$t\` FORMAT Native" | gzip > "ch-$t-$(date +%F).native.gz"
+done
+# restore per table: gunzip -c ch-TABLE-DATE.native.gz | docker compose exec -T plausible_events_db \
+#   clickhouse-client --query "INSERT INTO plausible_events_db.\`TABLE\` FORMAT Native"
+```
+
+> **Validate this on your own box before relying on it** — confirm a restore into
+> a scratch instance actually round-trips. For scheduled/offsite backups, the
+> maintained [`clickhouse-backup`](https://github.com/Altinity/clickhouse-backup)
+> tool is sturdier than a hand-rolled loop.
+
+**Still open:** automated, scheduled, offsite backups. The above is a manual
+floor, not a rotation policy — tracked in `CHANGES.md`.
