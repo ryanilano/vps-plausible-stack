@@ -2,8 +2,9 @@
 
 Plausible CE is multi-site out of the box — this one VPS can collect analytics for
 any number of domains with **no infrastructure change**. You only touch the
-Plausible dashboard and the target site. The dashboard step is identical for any
-host; the proxy step has a recipe per platform (Vercel and Cloudflare below).
+Plausible dashboard and the target site: register the domain, drop in the tracking
+snippet, and (recommended) serve that snippet first-party so ad-blockers don't drop
+your traffic.
 
 Throughout, `STATS_HOST` means this instance's public host — the `DOMAIN` value in
 `.env` (e.g. `stats.yourdomain.example`).
@@ -16,19 +17,49 @@ Throughout, `STATS_HOST` means this instance's public host — the `DOMAIN` valu
 2. **Add a website** → enter the domain exactly as visitors see it (e.g.
    `example.com`, no scheme, no `www.` unless the site actually serves `www.`).
    This string is the site's identity in Plausible and must match `data-domain`
-   below character-for-character.
+   in the snippet character-for-character.
 
-## 2. Send events — use a first-party proxy
+## 2. Add the tracking snippet to your site
 
-Serve Plausible's script and event endpoint from the site's **own** domain. This is
-the only reliable way to keep ad-blockers from dropping traffic.
+Drop this into the site's `<head>`. This is the standard Plausible snippet, pointed
+straight at this instance:
 
-> **Why not the plain snippet?** A standard `<script src="https://STATS_HOST/js/script.js">`
-> is trivially blocked: filter lists (EasyPrivacy et al.) match on the `/js/script.js`
-> path, the `/api/event` endpoint, and analytics-style subdomains — a custom `stats.`
-> host does not evade them. Proxying those two paths through the site's own domain
-> makes the requests indistinguishable from first-party traffic, so nothing is
-> blocked and data is materially more complete.
+```html
+<script defer data-domain="example.com" src="https://STATS_HOST/js/script.js"></script>
+```
+
+- Replace `example.com` with the domain you registered in step 1 (they must match
+  exactly) and `STATS_HOST` with this instance's host.
+- **Plain HTML / most frameworks:** put the tag in `<head>`.
+- **Next.js (App Router):** use `next/script` in `app/layout.tsx`:
+
+  ```tsx
+  import Script from "next/script";
+  // inside <head> (or top of <body>):
+  <Script
+    defer
+    data-domain="example.com"
+    src="https://STATS_HOST/js/script.js"
+    strategy="afterInteractive"
+  />
+  ```
+
+This alone starts collecting data. **But** the `/js/script.js` path and `/api/event`
+endpoint are trivially blocked by ad-blockers (see step 3), so a chunk of traffic
+goes uncounted. To fix that, serve the snippet first-party — which changes only the
+`src`.
+
+## 3. (Recommended) Serve the snippet first-party
+
+> **Why?** A standard `<script src="https://STATS_HOST/js/script.js">` is trivially
+> blocked: filter lists (EasyPrivacy et al.) match on the `/js/script.js` path, the
+> `/api/event` endpoint, and analytics-style subdomains — a custom `stats.` host does
+> not evade them. Proxying those two paths through the site's own domain makes the
+> requests indistinguishable from first-party traffic, so nothing is blocked and data
+> is materially more complete.
+
+Pick the recipe for your platform. Each one proxies `/js/script.js` and `/api/event`
+through the site's own domain, then points the snippet's `src` at the **local** path.
 
 ### Vercel: `vercel.json`
 
@@ -41,30 +72,14 @@ the only reliable way to keep ad-blockers from dropping traffic.
 }
 ```
 
-Replace `STATS_HOST` with the real host. Deploy so the rewrites go live.
-
-### The snippet
-
-Note `src` is the **local** path now, not the VPS URL:
+Replace `STATS_HOST` with the real host and deploy so the rewrites go live. Then
+change the snippet's `src` from step 2 to the **local** path (`data-domain` stays):
 
 ```html
 <script defer data-domain="example.com" src="/js/script.js"></script>
 ```
 
-**Next.js (App Router)** — add to `app/layout.tsx`:
-
-```tsx
-import Script from "next/script";
-// inside <head> (or top of <body>):
-<Script
-  defer
-  data-domain="example.com"
-  src="/js/script.js"
-  strategy="afterInteractive"
-/>
-```
-
-Plain HTML / other frameworks: drop the `<script>` tag in `<head>`.
+For Next.js, change the `src` on the `<Script>` tag the same way.
 
 ### Cloudflare: Worker in front of static assets
 
@@ -112,7 +127,8 @@ export default {
 };
 ```
 
-Snippet (same-origin, no `data-domain` — the `pa-*.js` script carries the site id):
+Snippet for this variant (same-origin, no `data-domain` — the `pa-*.js` script
+carries the site id):
 
 ```html
 <script is:inline defer src="/js/p.js"></script>
@@ -122,10 +138,10 @@ If `/js/p.js` returns a static-asset 404 after deploy, the assets layer is winni
 over the Worker — add `"run_worker_first": ["/js/p.js", "/api/event"]` to the
 `assets` block.
 
-## 3. Verify
+## 4. Verify
 
-- `curl -I https://example.com/js/script.js` → `200` (the proxy is serving it
-  first-party, not a 404).
+- If you proxied (step 3): `curl -I https://example.com/js/script.js` → `200` (the
+  proxy is serving it first-party, not a 404).
 - Open the site, then watch Plausible **Realtime** for `example.com` — a live
   visitor should show within seconds.
 - After a day, confirm the **Countries** report is populated. If it stays empty,
@@ -133,5 +149,5 @@ over the Worker — add `"run_worker_first": ["/js/p.js", "/api/event"]` to the
   `x-forwarded-for` (Vercel rewrites do) and that Caddy passes it upstream
   (`reverse_proxy` does by default).
 
-That's it — no ports, secrets, `compose.yml`, or `Caddyfile` edits. Repeat step 1
-per domain; each site gets its own `data-domain` and its own proxy config.
+That's it — no ports, secrets, `compose.yml`, or `Caddyfile` edits. Repeat per
+domain; each site gets its own `data-domain` and its own proxy config.
