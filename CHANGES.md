@@ -53,6 +53,23 @@ identity/dashboard build is the separate **M+** variant.
   and tuned via the upstream low-resource configs. The **first ClickHouse
   migration** is the OOM risk to watch.
 
+## MaxMind city-level geo: available, off by default, viable on 2 GB
+- Why: Plausible ships country-level geo built in; city-level needs a MaxMind
+  license (`MAXMIND_LICENSE_KEY` + `MAXMIND_EDITION`, e.g. `GeoLite2-City`).
+  The two vars ship **commented-out** in `compose.yml` (plausible service) and
+  `env.example` so they're documented but inert until opted into — a live-but-empty
+  key could trigger a download with a blank credential.
+- On sizing: upstream warns GeoLite2-City wants **~1 GB more RAM**
+  ([wiki](https://github.com/plausible/community-edition/wiki/Maxmind-Integration)),
+  which is why the cautious framing was "leave off." In practice city-level has run
+  fine on this 2 GB box tracking two sites, backed by the swapfile (see "2 GB
+  sizing"). So it's positioned as a viable option, not a blocked one.
+- Trade-off: enabling leans harder on swap and adds periodic geo-DB refreshes; the
+  RAM headroom shrinks alongside the first-ClickHouse-migration OOM risk.
+- Revisit if: OOM kills or ClickHouse migration spikes start coinciding with geo-DB
+  refreshes, or you add more sites → drop back to country-level (comment the vars)
+  or upsize the box.
+
 ## Rootful Docker (operator in the docker group)
 - Caveat: docker-group membership is root-equivalent.
 - The repo no longer *installs* Docker (see the prerequisites decision below); it

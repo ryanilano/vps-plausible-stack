@@ -26,6 +26,11 @@ Browser → Caddy → Plausible        (stats.yourdomain.example)
 Caddy   → Let's Encrypt (HTTP-01)   certificate issuance
 ```
 
+In practice this 2 GB tier runs comfortably tracking two sites. Upstream warns
+that city-level MaxMind geo wants ~1 GB more RAM, but in practice it has run fine
+here too, backed by the swapfile bootstrap creates. City-level geo is optional —
+see the `MAXMIND_*` notes in `env.example`.
+
 ## Requirements
 
 Provision these on the VPS before you start — the repo does not install Docker or

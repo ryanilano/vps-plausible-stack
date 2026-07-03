@@ -109,6 +109,15 @@ services:
       DISABLE_REGISTRATION: ${DISABLE_REGISTRATION:-true}
       DATABASE_URL: postgres://postgres:${POSTGRES_PASSWORD}@plausible_db:5432/plausible
       CLICKHOUSE_DATABASE_URL: http://plausible_events_db:8123/plausible_events_db
+      # ---- Optional: MaxMind city-level geolocation --------------------------
+      # Plausible ships country-level geo by default; these upgrade it to
+      # city-level (auto-downloaded and kept fresh). Upstream warns GeoLite2-City
+      # wants ~1 GB more RAM, but in practice it has run fine on this 2 GB box,
+      # backed by the swapfile. To enable: set both in .env, uncomment below,
+      # then `docker compose up -d`.
+      # See https://github.com/plausible/community-edition/wiki/Maxmind-Integration
+      # MAXMIND_LICENSE_KEY: ${MAXMIND_LICENSE_KEY}
+      # MAXMIND_EDITION: ${MAXMIND_EDITION:-GeoLite2-City}
     volumes:
       - plausible_data:/var/lib/plausible
     ulimits:
