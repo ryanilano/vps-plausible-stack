@@ -9,5 +9,6 @@
 # Upstream ClickHouse configs (fetched by bootstrap, version-locked to Plausible CE)
 clickhouse/*.xml
 
-# Local setup notes — not part of the published repo
+# Local setup notes and internal working plans — not part of the published repo
 instructions.md
+plans/
